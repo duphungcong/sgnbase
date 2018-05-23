@@ -48,6 +48,6 @@ new Vue({
     })
   },
   mounted () {
-    console.log(this.$store.getters['user/email'])
+    console.log('init App')
   }
 })

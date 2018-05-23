@@ -7,7 +7,13 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    this.$store.dispatch('user/login', {
+      email: 'duphungcong@gmail.com',
+      password: '123'
+    })
+  }
 }
 </script>
 
