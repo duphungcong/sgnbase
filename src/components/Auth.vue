@@ -66,6 +66,9 @@
 </template>
 
 <script>
+
+import { mapMutations, mapState } from 'vuex'
+
 export default {
   data () {
     return {
@@ -75,22 +78,37 @@ export default {
     }
   },
   computed: {
-    loading () {
-      return this.$store.getters.loading
+    ...mapState(['loading', 'error'])
+  },
+  watch: {
+    error (value) {
+      if (value !== null && value !== undefined) {
+        this.openSnackbar({
+          text: value.message,
+          color: 'error'
+        })
+      }
     }
   },
   methods: {
+    ...mapMutations('snackbar', ['showSnackbar', 'closeSnackbar']),
     onLogIn () {
-      this.$store.dispatch('user/login', {
+      this.$store.dispatch('auth/login', {
         email: this.email,
         password: this.password
       })
     },
     onSignUp () {
-      this.$store.dispatch('user/signUp', {
+      this.$store.dispatch('auth/signUp', {
         email: this.email,
         password: this.password
       })
+    },
+    onLogout () {
+      this.$store.dispatch('auth/logout')
+    },
+    openSnackbar (payload) {
+      this.showSnackbar(payload)
     }
   }
 }

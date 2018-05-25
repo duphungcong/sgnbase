@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
-import user from './modules/user'
+import auth from './modules/auth'
+import snackbar from './modules/snackbar'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ const mutations = {
 }
 
 const getters = {
-  loading: state => state.loading
+  loading: state => state.loading,
+  error: state => state.error
 }
 
 export default new Vuex.Store({
@@ -30,6 +32,7 @@ export default new Vuex.Store({
   mutations,
   getters,
   modules: {
-    user
+    auth,
+    snackbar
   }
 })

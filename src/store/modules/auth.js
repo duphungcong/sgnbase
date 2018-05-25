@@ -1,4 +1,6 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
 
 const state = {
   user: null
@@ -12,43 +14,39 @@ const mutations = {
 
 const actions = {
   login ({ commit }, payload) {
+    commit('setError', null, { root: true })
     commit('setLoading', true, { root: true })
     firebase.auth().signInWithEmailAndPassword(payload.email, payload.password).then(
       (user) => {
+        // commit('setUser', user)
         commit('setLoading', false, { root: true })
-        firebase.database().ref('users/' + user.id).on('value',
-          (data) => {
-            let currentUser = data.val()
-            commit('setUser', currentUser)
-          },
-          (console.error())
-        )
+      },
+      (error) => {
+        commit('setError', error, { root: true })
+        commit('setLoading', false, { root: true })
       }
     )
   },
   signUp ({ commit }, payload) {
+    commit('setError', null, { root: true })
     commit('setLoading', true, { root: true })
     firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password).then(
       (user) => {
+        // commit('setUser', user)
         commit('setLoading', false, { root: true })
-        const newUser = {
-          id: user.uid,
-          email: user.email,
-          displayName: '',
-          photoUrl: './assets/img/avatar0.png'
-        }
-        firebase.database().ref('users/' + user.id).set(newUser).then(
-          (data) => commit('setUser', newUser),
-          (console.error())
-        )
       },
       (error) => {
+        console.log(error)
+        commit('setError', error, { root: true })
         commit('setLoading', false, { root: true })
-        commit('setError', error)
       }
     )
   },
+  autoSignIn ({ commit }, payload) {
+    commit('setUser', payload)
+  },
   logout ({ commit }) {
+    firebase.auth().signOut()
     commit('setUser', null)
   }
 }
