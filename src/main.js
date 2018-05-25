@@ -11,7 +11,6 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 
 import 'vuetify/dist/vuetify.min.css'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'babel-polyfill'
 
 Vue.config.productionTip = false

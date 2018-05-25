@@ -7,19 +7,28 @@ import user from './modules/user'
 Vue.use(Vuex)
 
 const state = {
-  loading: false
+  loading: false,
+  error: null
 }
 
 const mutations = {
-  setLoading (state, { loading }) {
-    state.loading = loading
+  setLoading (state, payload) {
+    state.loading = payload
+  },
+  setError (state, payload) {
+    state.error = payload
   }
+}
+
+const getters = {
+  loading: state => state.loading
 }
 
 export default new Vuex.Store({
   plugins: [createPersistedState({ storage: window.sessionStorage })],
   state,
   mutations,
+  getters,
   modules: {
     user
   }
