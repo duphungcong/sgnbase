@@ -2,7 +2,7 @@
   <v-navigation-drawer
     v-model="navmenu.visible"
     app
-    :mini-variant.sync="mini">
+    :mini-variant="mini">
 
     <v-list dense class="pt-0">
 
