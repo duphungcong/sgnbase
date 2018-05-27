@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 import auth from './modules/auth'
 import snackbar from './modules/snackbar'
+import navmenu from './modules/navmenu'
 
 Vue.use(Vuex)
 
@@ -33,6 +34,7 @@ export default new Vuex.Store({
   getters,
   modules: {
     auth,
-    snackbar
+    snackbar,
+    navmenu
   }
 })

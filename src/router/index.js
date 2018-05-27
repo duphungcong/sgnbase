@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import About from '@/components/pages/About'
+import Dashboard from '@/components/pages/Dashboard'
 import Auth from '@/components/Auth'
 
 Vue.use(Router)
@@ -9,14 +10,19 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
-      component: HelloWorld,
-      name: 'HelloWorld'
+      path: '/about',
+      component: About,
+      name: 'About'
     },
     {
       path: '/auth',
       component: Auth,
       name: 'Auth'
+    },
+    {
+      path: '/dashboard',
+      component: Dashboard,
+      name: 'Dashboard'
     }
   ]
 })
