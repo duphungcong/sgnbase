@@ -4,7 +4,10 @@
       <router-view></router-view>
     </template>
     <template v-else>
-      <navmenu @goTo="goTo"></navmenu>
+      <navmenu
+        :isFollowingCheck="isFollowingCheck"
+        @goTo="goTo">
+      </navmenu>
       <v-toolbar
         dense
         app
@@ -44,12 +47,22 @@ export default {
   computed: {
     isAuthenticated () {
       return this.$store.getters['auth/isAuthenticated']
+    },
+    isFollowingCheck () {
+      return this.$store.getters.isFollowingCheck
     }
   },
   watch: {
     isAuthenticated (value) {
       if (!value) {
         this.$router.push({ name: 'Auth' })
+      } else {
+        this.$router.push({ name: 'root' })
+      }
+    },
+    isFollowingCheck (value) {
+      if (!value) {
+        this.$router.push({ name: 'Checks' })
       } else {
         this.$router.push({ name: 'Dashboard' })
       }

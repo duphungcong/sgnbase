@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-model="navmenu.visible"
+    v-model="navMenu.visible"
     app
     :mini-variant="mini">
 
@@ -21,6 +21,7 @@
                   <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>
+                  <v-list-tile v-if="isFollowingCheck" @click="stopFollowingCheck">Stop following check</v-list-tile>
                   <v-list-tile @click="goTo('Acount')">Account</v-list-tile>
                   <v-list-tile @click="onLogOut">Logout</v-list-tile>
                 </v-list>
@@ -32,7 +33,7 @@
 
        <v-divider></v-divider>
 
-      <v-list-tile v-for="item in items" :key="item.title" @click="goTo(item.route)">
+      <v-list-tile v-for="item in itemMenu" :key="item.title" @click="goTo(item.route)">
         <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
@@ -66,15 +67,32 @@ export default {
   data () {
     return {
       mini: false,
-      items: [
+      checkMenu: [
         { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' },
         { title: 'About', icon: 'question_answer', route: 'About' }
+      ],
+      noCheckMenu: [
+        { title: 'Check', icon: 'contacts', route: 'Checks' },
+        { title: 'AMS', icon: 'contacts', route: 'ams' }
       ]
     }
   },
+  props: {
+    isFollowingCheck: {
+      type: Boolean,
+      default: () => { return false }
+    }
+  },
   computed: {
-    navmenu () {
+    navMenu () {
       return this.$store.getters['navmenu/navmenu']
+    },
+    itemMenu () {
+      if (this.isFollowingCheck) {
+        return this.checkMenu
+      } else {
+        return this.noCheckMenu
+      }
     }
   },
   methods: {
@@ -83,6 +101,9 @@ export default {
     },
     onLogOut () {
       this.$store.dispatch('auth/logout')
+    },
+    stopFollowingCheck () {
+      this.$store.dispatch('unFollowCheck')
     }
   }
 }

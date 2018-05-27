@@ -2,9 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 
+import Auth from '@/components/Auth'
+
 import About from '@/components/pages/About'
 import Dashboard from '@/components/pages/Dashboard'
-import Auth from '@/components/Auth'
+import Checks from '@/components/pages/Checks'
 
 Vue.use(Router)
 
@@ -24,10 +26,26 @@ const requireAuthenticated = (to, from, next) => {
   next('/auth')
 }
 
+const noRequireFollowingCheck = (to, from, next) => {
+  if (!store.getters.isFollowingCheck) {
+    requireAuthenticated(to, from, next)
+    return
+  }
+  next('/dashboard')
+}
+
+const requireFollowingCheck = (to, from, next) => {
+  if (store.getters.isFollowingCheck) {
+    requireAuthenticated(to, from, next)
+    return
+  }
+  next('/checks')
+}
+
 const router = new Router({
   mode: 'history',
   routes: [
-    { path: '/', redirect: '/dashboard' },
+    { path: '/', redirect: '/dashboard', name: 'root' },
     { path: '*', redirect: '/dashboard' },
     {
       path: '/about',
@@ -44,7 +62,13 @@ const router = new Router({
       path: '/dashboard',
       component: Dashboard,
       name: 'Dashboard',
-      beforeEnter: requireAuthenticated
+      beforeEnter: requireFollowingCheck
+    },
+    {
+      path: '/checks',
+      component: Checks,
+      name: 'Checks',
+      beforeEnter: noRequireFollowingCheck
     }
   ]
 })
