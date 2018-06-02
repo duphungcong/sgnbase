@@ -31,7 +31,7 @@
                       <v-text-field name="password" v-model="password" label="password" value="Input text" type="password" class="input-group--focused"></v-text-field>
                     </v-flex>
                   </v-layout>
-                  <v-btn class="blue white--text" type="submit" :disabled="loading" :loading="loading">log in</v-btn>
+                  <v-btn class="blue white--text" type="submit">log in</v-btn>
                 </form>
               </v-tab-item>
 
@@ -53,7 +53,7 @@
                       <v-text-field name="password" v-model="password" label="password" value="Input text" type="password" class="input-group--focused"></v-text-field>
                     </v-flex>
                   </v-layout>
-                  <v-btn class="blue white--text" type="submit" :disabled="loading" :loading="loading">sign up</v-btn>
+                  <v-btn class="blue white--text" type="submit">sign up</v-btn>
                 </form>
               </v-tab-item>
 
@@ -78,7 +78,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loading', 'error'])
+    ...mapState(['error'])
   },
   watch: {
     error (value) {

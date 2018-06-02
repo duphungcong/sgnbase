@@ -4,10 +4,10 @@
       <router-view></router-view>
     </template>
     <template v-else>
-      <navmenu
+      <nav-menu
         :isFollowingCheck="isFollowingCheck"
         @goTo="goTo">
-      </navmenu>
+      </nav-menu>
       <v-toolbar
         dense
         app
@@ -19,7 +19,7 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-content>
-        <v-container fluid fill-height>
+        <v-container fluid ma-0 pa-0>
           <v-layout>
             <v-flex row>
               <router-view></router-view>
@@ -29,20 +29,23 @@
       </v-content>
     </template>
     <snackbar></snackbar>
+    <loading-progress></loading-progress>
   </v-app>
 </template>
 
 <script>
 
-import snackbar from './components/Snackbar'
-import navmenu from './components/NavMenu'
+import Snackbar from './components/Snackbar'
+import NavMenu from './components/NavMenu'
+import LoadingProgress from './components/LoadingProgress'
 import { mapMutations } from 'vuex'
 
 export default {
   name: 'App',
   components: {
-    snackbar,
-    navmenu
+    Snackbar,
+    NavMenu,
+    LoadingProgress
   },
   computed: {
     isAuthenticated () {

@@ -5,6 +5,8 @@ import createPersistedState from 'vuex-persistedstate'
 import auth from './modules/auth'
 import snackbar from './modules/snackbar'
 import navmenu from './modules/navmenu'
+import checks from './modules/checks'
+import confirmdialog from './modules/confirmdialog'
 
 Vue.use(Vuex)
 
@@ -51,6 +53,8 @@ export default new Vuex.Store({
   modules: {
     auth,
     snackbar,
-    navmenu
+    navmenu,
+    checks,
+    confirmdialog
   }
 })
