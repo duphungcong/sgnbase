@@ -23,12 +23,12 @@
                 <v-icon color="blue" slot="activator">touch_app</v-icon><span>follow</span>
               </v-tooltip>
             </v-btn>
-            <v-btn icon class="mx-0" @click.native="editCheck(props.item)">
+            <v-btn icon class="mx-0" @click.native="editCheck(props.item.id)">
               <v-tooltip bottom>
                   <v-icon color="blue" slot="activator">edit</v-icon><span>edit</span>
               </v-tooltip>
             </v-btn>
-            <v-btn icon class="mx-0" @click.native="dialogDelete = true, deletedCheckId = props.item.id">
+            <v-btn icon class="mx-0" @click.native="deleteCheck(props.item.id)">
               <v-tooltip bottom>
                   <v-icon color="red" slot="activator">delete</v-icon><span>delete</span>
               </v-tooltip>
@@ -80,16 +80,18 @@ export default {
     }
   },
   computed: {
-    ...mapState('checks', ['checks'])
+    ...mapState(['checks'])
   },
   methods: {
     ...mapMutations('confirmdialog', ['showDialog', 'closeDialog']),
     addCheck () {
-      // this.showDialog({
-      //   text: 'Do you want to create new check?',
-      //   title: 'Create new check'
-      // })
-      this.dialogTitle = 'Do you want to create a new check?'
+      this.$router.push({ name: 'Check' })
+    },
+    editCheck (checkId) {
+      this.$router.push({ name: 'Check', params: { id: checkId } })
+    },
+    deleteCheck (checkId) {
+      this.dialogTitle = 'Do you want to delete this check?'
       this.dialog = true
     },
     onCancel () {
@@ -97,7 +99,6 @@ export default {
       this.dialogTitle = ''
     },
     onConfirm () {
-      alert('Create')
       this.onCancel()
     },
     followCheck (checkId) {
@@ -124,8 +125,8 @@ export default {
       return 'completed'
     }
   },
-  mounted () {
-    this.$store.dispatch('checks/getChecks')
+  created () {
+    this.$store.dispatch('getChecks')
   }
 }
 </script>

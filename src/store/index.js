@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+import firebase from 'firebase/app'
+import 'firebase/database'
 
 import auth from './modules/auth'
 import snackbar from './modules/snackbar'
 import navmenu from './modules/navmenu'
-import checks from './modules/checks'
+import check from './modules/check'
 import confirmdialog from './modules/confirmdialog'
 
 Vue.use(Vuex)
@@ -13,7 +15,9 @@ Vue.use(Vuex)
 const state = {
   loading: false,
   error: null,
-  checkId: null
+  checkId: null,
+  checks: [],
+  workpack: []
 }
 
 const mutations = {
@@ -25,6 +29,12 @@ const mutations = {
   },
   setCheckId (state, payload) {
     state.checkId = payload
+  },
+  setChecks (state, payload) {
+    state.checks = payload
+  },
+  setWorkpack (state, payload) {
+    state.workpack = payload
   }
 }
 
@@ -34,6 +44,19 @@ const actions = {
   },
   unFollowCheck ({ commit }) {
     commit('setCheckId', null)
+  },
+  getChecks ({ commit }) {
+    commit('setLoading', true)
+    firebase.database().ref('checks').on('value',
+      (data) => {
+        const checks = Object.values(data.val()) || []
+        commit('setChecks', checks)
+        commit('setLoading', false)
+      },
+      (error) => {
+        console.log(error)
+        commit('setLoading', false)
+      })
   }
 }
 
@@ -41,7 +64,8 @@ const getters = {
   loading: state => state.loading,
   error: state => state.error,
   checkId: state => state.checkId,
-  isFollowingCheck: state => state.checkId !== null && state.checkId !== undefined
+  isFollowingCheck: state => state.checkId !== null && state.checkId !== undefined,
+  checks: state => state.checks
 }
 
 export default new Vuex.Store({
@@ -54,7 +78,7 @@ export default new Vuex.Store({
     auth,
     snackbar,
     navmenu,
-    checks,
+    check,
     confirmdialog
   }
 })

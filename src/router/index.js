@@ -7,6 +7,7 @@ import Auth from '@/components/Auth'
 import About from '@/components/pages/About'
 import Dashboard from '@/components/pages/Dashboard'
 import Checks from '@/components/pages/Checks'
+import Check from '@/components/pages/Check'
 
 Vue.use(Router)
 
@@ -68,6 +69,12 @@ const router = new Router({
       path: '/checks',
       component: Checks,
       name: 'Checks',
+      beforeEnter: noRequireFollowingCheck
+    },
+    {
+      path: '/check',
+      component: Check,
+      name: 'Check',
       beforeEnter: noRequireFollowingCheck
     }
   ]

@@ -72,7 +72,7 @@ export default {
         { title: 'About', icon: 'question_answer', route: 'About' }
       ],
       noCheckMenu: [
-        { title: 'Check', icon: 'contacts', route: 'Checks' },
+        { title: 'Checks', icon: 'contacts', route: 'Checks' },
         { title: 'AMS', icon: 'contacts', route: 'ams' }
       ]
     }
