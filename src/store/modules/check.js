@@ -20,7 +20,7 @@ const actions = {
       firebase.database().ref('aircraft').on('value',
         (data) => {
           const list = Object.values(data.val()) || []
-          console.log(list)
+          // console.log(list)
           context.commit('setAircraftList', list)
         },
         (error) => {

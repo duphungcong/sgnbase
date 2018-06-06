@@ -53,13 +53,12 @@
           </v-flex>
         </v-layout>
         <v-btn @click.native="dialogConfirmCancel = true">Cancel</v-btn>
-        <v-btn color="primary" @click.native="step = 2" :disabled="!completeStep1">Next</v-btn>
+        <v-btn color="primary" @click.native="nextStep2" :disabled="!completeStep1">Next</v-btn>
       </v-stepper-content>
 
       <v-stepper-step step="2" :complete="step > 2">Import WP</v-stepper-step>
       <v-stepper-content step="2">
         <v-card class="lighten-4 elevation-0">
-          <v-card-title><h3>Import WP CONTROL</h3></v-card-title>
           <v-card-text>
             <v-form>
               <input type="file" id="file" @change="onFileChange">
@@ -69,53 +68,24 @@
           </v-card-text>
         </v-card>
         <v-btn @click.native="step = 1">Back</v-btn>
-        <v-btn color="primary" @click.native="scanZoneDivision()" :disabled="!completeStep2">Next</v-btn>
+        <v-btn color="primary" @click.native="nextStep3()" :disabled="!completeStep2">Next</v-btn>
       </v-stepper-content>
 
-      <v-stepper-step step="3" :complete="step > 3">Zone Division</v-stepper-step>
+      <v-stepper-step step="3" :complete="step > 3">Review and submit</v-stepper-step>
       <v-stepper-content step="3">
-        <!-- <v-card class="lighten-4 elevation-0">
-          <v-card-title><h3>Zone Division</h3></v-card-title>
-          <v-card-actions>
-            <v-btn @click.native="step = 2">Back</v-btn>
-            <v-btn color="primary" @click.native="step = 4">Next</v-btn>
-          </v-card-actions>
-
-          <v-data-table :headers="headers" :items="workpack">
-            <template slot="items" slot-scope="props" class="body-0">
-              <td class="body-0">{{ props.item.wpItem }}</td>
-              <td class="body-0">{{ props.item.taskName }}</td>
-              <td class="body-0">{{ props.item.zone }}</td>
-              <td class="body-0">{{ props.item.taskType }}</td>
-              <td class="body-0">{{ props.item.taskTitle }}</td>
-              <td class="body-0">{{ props.item.amsMH }}</td>
-              <td class="body-0">{{ props.item.macMH }}</td>
-              <td class="body-0">{{ props.item.men }}</td>
-              <td class="body-0">{{ props.item.hour }}</td>
-              <td class="body-0">{{ props.item.zoneDivision }}</td>
-              <td class="body-0">{{ props.item.remarks }}</td>
-            </template>
-          </v-data-table>
-        </v-card> -->
-        <v-btn @click.native="step = 2">Back</v-btn>
-      </v-stepper-content>
-
-      <v-stepper-step step="4" :complete="step > 4">Finish</v-stepper-step>
-      <v-stepper-content step="4">
-        <!-- <v-card class="lighten-4 elevation-0">
-          <v-card-title><h3>Review and submit</h3></v-card-title>
+        <v-card class="lighten-4 elevation-0">
           <v-card-text>
             <p>Check: <strong>{{ check.name }}</strong></p>
             <p>Aircraft: <strong>{{ check.aircraft.name }}</strong></p>
-            <p>Task Cards: <strong>{{ numberTaskCard }}</strong></p>
             <p>From: <strong>{{ check.startDate }}</strong></p>
             <p>To: <strong>{{ check.finishDate }}</strong></p>
+            <p>Task cards: <strong>{{ numberTaskCard }}</strong></p>
+            <p>Task cards do not have Zone Division: <strong>{{ numberTaskCardNA }}</strong></p>
           </v-card-text>
         </v-card>
-        <v-btn @click.native="step = 3">Back</v-btn>
-        <v-btn color="primary" @click.native="saveCheck()">Save</v-btn> -->
-        <v-btn @click.native="step = 3">Back</v-btn>
+        <v-btn @click.native="step = 2">Back</v-btn>
       </v-stepper-content>
+
     </v-stepper>
   </v-flex>
 </template>
@@ -144,7 +114,8 @@ export default {
       completeStep1: true,
       completeStep2: true,
       ams: [],
-      workpack: []
+      workpack: [],
+      updatedWorkpack: []
     }
   },
   computed: {
@@ -152,11 +123,24 @@ export default {
     ...mapState('check', ['checkId', 'aircraftList']),
     numberTaskCard () {
       return this.workpack.length
+    },
+    numberTaskCardNA () {
+      return this.updatedWorkpack.filter((item) => {
+        return item.zoneDivision.indexOf('N/A') === 0
+      }).length
     }
   },
   methods: {
     ...mapMutations('check', ['setCheckId']),
     ...mapMutations(['setLoading']),
+    nextStep2 () {
+      this.getAMS()
+      this.step = 2
+    },
+    nextStep3 () {
+      this.updatedWorkpack = this.scanZoneDivision()
+      this.step = 3
+    },
     getCheck () {
       const check = this.checks.find((item) => {
         return item.id === this.checkId
@@ -170,7 +154,7 @@ export default {
       firebase.database().ref('ams' + this.check.aircraft.type).once('value').then(
         (data) => {
           this.ams = Object.values(data.val()) || []
-          console.log(this.ams)
+          // console.log(this.ams)
           this.setLoading(false)
         },
         (error) => {
@@ -180,7 +164,38 @@ export default {
       )
     },
     scanZoneDivision () {
-      this.step = 3
+      return this.workpack.map((item) => {
+        const task = this.ams.find((el) => {
+          return el.taskName === item.taskName
+        })
+        let additionalData
+        if (task) {
+          additionalData = {
+            taskId: task.id || '',
+            amsMH: task.amsMH || 0,
+            macMH: task.macMH || 0,
+            men: task.men || 0,
+            hour: task.hour || 0,
+            zoneDivision: task.zoneDivision || 'N/A',
+            remarks: task.remarks || 'NIL'
+          }
+        } else {
+          additionalData = {
+            taskId: '',
+            amsMH: 0,
+            macMH: 0,
+            men: 0,
+            hour: 0,
+            zoneDivision: 'N/A',
+            remarks: 'NIL'
+          }
+        }
+        return Object.assign({}, item, {
+          notes: '',
+          shifts: [ 1 ],
+          status: 'notYet'
+        }, additionalData)
+      })
     },
     onFileChange (e) {
       const files = e.target.files || e.dataTransfer.files
@@ -217,7 +232,6 @@ export default {
       this.title = 'New Check'
     }
     this.getCheck()
-    this.getAMS()
   },
   mounted () {}
 }
