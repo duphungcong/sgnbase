@@ -47,7 +47,7 @@ const actions = {
   },
   getChecks ({ commit }) {
     commit('setLoading', true)
-    firebase.database().ref('checks').on('value',
+    firebase.database().ref('checks').once('value').then(
       (data) => {
         const checks = Object.values(data.val()) || []
         commit('setChecks', checks)
@@ -56,7 +56,8 @@ const actions = {
       (error) => {
         console.log(error)
         commit('setLoading', false)
-      })
+      }
+    )
   }
 }
 

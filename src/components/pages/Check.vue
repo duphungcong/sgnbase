@@ -1,6 +1,6 @@
 <template>
   <v-flex xs12>
-    <v-stepper v-model="step" vertical>
+    <v-stepper v-model="step" vertical class="elevation-0">
 
       <v-stepper-step step="1" :complete="step > 1">Basic Information</v-stepper-step>
       <v-stepper-content step="1">
@@ -52,7 +52,7 @@
             </v-menu>
           </v-flex>
         </v-layout>
-        <v-btn @click.native="dialogConfirmCancel = true">Cancel</v-btn>
+        <v-btn @click.native="cancelProgress">Cancel</v-btn>
         <v-btn color="primary" @click.native="nextStep2" :disabled="!completeStep1">Next</v-btn>
       </v-stepper-content>
 
@@ -84,9 +84,17 @@
           </v-card-text>
         </v-card>
         <v-btn @click.native="step = 2">Back</v-btn>
+        <v-btn color="primary" @click.native="submit()" :disabled="!completeStep3">submit</v-btn>
       </v-stepper-content>
 
     </v-stepper>
+
+    <confirm-dialog
+      :dialog="dialog"
+      :title="dialogTitle"
+      @onConfirm="onConfirm"
+      @onCancel="onCancel"></confirm-dialog>
+
   </v-flex>
 </template>
 
@@ -97,8 +105,12 @@ import firebase from 'firebase/app'
 import 'firebase/database'
 import { mapState, mapMutations } from 'vuex'
 import { Check } from '@/models/Check'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 export default {
+  components: {
+    ConfirmDialog
+  },
   beforeRouteLeave (to, from, next) {
     if (to.name !== 'Check') {
       // console.log('leaved')
@@ -108,11 +120,14 @@ export default {
   },
   data () {
     return {
+      dialog: false,
+      dialogTitle: '',
       title: '',
       check: new Check(),
       step: 1,
       completeStep1: true,
       completeStep2: true,
+      completeStep3: true,
       ams: [],
       workpack: [],
       updatedWorkpack: []
@@ -141,12 +156,46 @@ export default {
       this.updatedWorkpack = this.scanZoneDivision()
       this.step = 3
     },
+    submit () {
+      this.check.setShifts()
+      this.saveNewCheck()
+    },
+    saveNewCheck () {
+      this.setLoading(true)
+
+      let updates = {}
+
+      this.check.id = firebase.database().ref('checks/').push().key
+      let checkRef = '/checks/' + this.check.id
+      let workpackRef = '/workpacks/' + this.check.id
+
+      this.updatedWorkpack.forEach(item => {
+        item.id = firebase.database().ref('workpacks/' + this.check.id).push().key
+        let itemRef = workpackRef + '/' + item.id
+        updates[itemRef] = item
+      })
+      updates[checkRef] = this.check
+
+      firebase.database().ref().update(updates).then(
+        (data) => {
+          this.setLoading(false)
+          this.$router.push({ name: 'Checks' })
+        },
+        (error) => {
+          console.log(error)
+          this.setLoading(false)
+        }
+      )
+    },
+    saveEditCheck () {
+      console.log('save edit check')
+    },
     getCheck () {
-      const check = this.checks.find((item) => {
+      const check = this.checks.find(item => {
         return item.id === this.checkId
       })
       if (check) {
-        this.check = Object.assign({}, check)
+        this.check = Object.assign(new Check(), check)
       }
     },
     getAMS () {
@@ -164,8 +213,8 @@ export default {
       )
     },
     scanZoneDivision () {
-      return this.workpack.map((item) => {
-        const task = this.ams.find((el) => {
+      return this.workpack.map(item => {
+        const task = this.ams.find(el => {
           return el.taskName === item.taskName
         })
         let additionalData
@@ -221,6 +270,17 @@ export default {
         this.readingIsCompleted = true
       }
       reader.readAsBinaryString(file)
+    },
+    cancelProgress () {
+      this.dialogTitle = 'Do you want to cancel your progress?'
+      this.dialog = true
+    },
+    onCancel () {
+      this.dialog = false
+      this.dialogTitle = ''
+    },
+    onConfirm () {
+      this.$router.push({ name: 'Checks' })
     }
   },
   created () {
