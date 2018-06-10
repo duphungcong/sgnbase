@@ -68,11 +68,11 @@ export default {
     return {
       mini: false,
       checkMenu: [
-        { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' },
-        { title: 'About', icon: 'question_answer', route: 'About' }
+        { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' }
       ],
       noCheckMenu: [
         { title: 'Checks', icon: 'contacts', route: 'Checks' },
+        { title: 'AMS Task', icon: 'contacts', route: 'Task' },
         { title: 'Mac Consult', icon: 'contacts', route: 'Consult' }
       ]
     }

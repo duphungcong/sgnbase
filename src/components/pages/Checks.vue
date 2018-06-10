@@ -2,9 +2,6 @@
   <v-flex xs12>
     <v-card class="elevation-0">
       <v-card-title>
-        <!-- <v-btn fab small dark class="red" @click.native="addCheck">
-          <v-icon>add</v-icon>
-        </v-btn> -->
         <v-btn depressed small dark color="primary" @click.native="addCheck">New Check</v-btn>
         <v-spacer></v-spacer>
         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
@@ -19,23 +16,7 @@
           <td class="body-2">{{ formatDate(props.item.finishDate) }}</td>
           <td class="body-2">{{ remainDay(props.item.startDate, props.item.finishDate) }}</td>
           <td class="text-xs-right">
-            <!-- <v-btn icon class="mx-0" @click.native="followCheck(props.item.id)">
-              <v-tooltip bottom>
-                <v-icon color="blue" slot="activator">touch_app</v-icon><span>follow</span>
-              </v-tooltip>
-            </v-btn>
-            <v-btn icon class="mx-0" @click.native="editCheck(props.item.id)">
-              <v-tooltip bottom>
-                  <v-icon color="blue" slot="activator">edit</v-icon><span>edit</span>
-              </v-tooltip>
-            </v-btn>
-            <v-btn icon class="mx-0" @click.native="confirmDelete(props.item.id)">
-              <v-tooltip bottom>
-                  <v-icon color="red" slot="activator">delete</v-icon><span>delete</span>
-              </v-tooltip>
-            </v-btn> -->
             <v-btn depressed small outline color="primary" @click.native="followCheck(props.item.id)">Follow</v-btn>
-            <v-btn depressed small outline color="primary" @click.native="zoneDivision(props.item.id)">ZD</v-btn>
             <v-btn depressed small outline color="error" @click.native="confirmDelete(props.item.id)">Delete</v-btn>
           </td>
         </template>
@@ -94,9 +75,6 @@ export default {
     ...mapMutations('confirmdialog', ['showDialog', 'closeDialog']),
     addCheck () {
       this.$router.push({ name: 'Check' })
-    },
-    editCheck (checkId) {
-      this.$router.push({ name: 'Check', params: { id: checkId } })
     },
     deleteCheck () {
       this.setLoading(true)

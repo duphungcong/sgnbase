@@ -1,7 +1,7 @@
 <template>
   <v-flex xs12>
     <v-card class="elevation-0">
-      <v-card-title><h3>Import Mac Consult</h3></v-card-title>
+      <v-card-title><h4>Import Mac Consult</h4></v-card-title>
       <v-card-text>
         <v-radio-group v-model="type">
           <v-radio

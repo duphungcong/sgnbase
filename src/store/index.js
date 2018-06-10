@@ -43,11 +43,13 @@ const mutations = {
 }
 
 const actions = {
-  followCheck ({ commit }, payload) {
-    commit('setCheckId', payload)
+  followCheck (context, payload) {
+    context.commit('setCheckId', payload)
+    context.dispatch('getWorkpack')
   },
-  unFollowCheck ({ commit }) {
-    commit('setCheckId', null)
+  unFollowCheck (context) {
+    context.commit('setCheckId', null)
+    context.commit('setWorkpack', [])
   },
   getChecks (context) {
     context.commit('setExtLoad', true)
@@ -56,7 +58,7 @@ const actions = {
       (data) => {
         const obj = data.val()
         if (obj !== null && obj !== undefined) {
-          context.commit('setChecks', Object.values(data.val()) || [])
+          context.commit('setChecks', Object.values(obj) || [])
         } else {
           context.commit('setChecks', [])
         }
@@ -71,6 +73,21 @@ const actions = {
           context.commit('setLoading', false)
           context.commit('setExtLoad', false)
         }
+      }
+    )
+  },
+  getWorkpack (context) {
+    firebase.database().ref('workpacks/' + context.state.checkId).on('value',
+      (data) => {
+        const obj = data.val()
+        if (obj !== null && obj !== undefined) {
+          context.commit('setWorkpack', Object.values(obj) || [])
+        } else {
+          context.commit('setWorkpack', [])
+        }
+      },
+      (error) => {
+        console.log(error)
       }
     )
   }

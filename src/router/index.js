@@ -2,12 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 
-import Auth from '@/components/Auth'
-
+import Auth from '@/components/pages/Auth'
+import Check from '@/components/pages/Check'
+import Checks from '@/components/pages/Checks'
 import Consult from '@/components/pages/Consult'
 import Dashboard from '@/components/pages/Dashboard'
-import Checks from '@/components/pages/Checks'
-import Check from '@/components/pages/Check'
+import Task from '@/components/pages/Task'
 
 Vue.use(Router)
 
@@ -49,21 +49,16 @@ const router = new Router({
     { path: '/', redirect: '/dashboard', name: 'root' },
     { path: '*', redirect: '/dashboard' },
     {
-      path: '/consult',
-      component: Consult,
-      name: 'Consult'
-    },
-    {
       path: '/auth',
       component: Auth,
       name: 'Auth',
       beforeEnter: noRequireAuthenticated
     },
     {
-      path: '/dashboard',
-      component: Dashboard,
-      name: 'Dashboard',
-      beforeEnter: requireFollowingCheck
+      path: '/check',
+      component: Check,
+      name: 'Check',
+      beforeEnter: noRequireFollowingCheck
     },
     {
       path: '/checks',
@@ -72,10 +67,20 @@ const router = new Router({
       beforeEnter: noRequireFollowingCheck
     },
     {
-      path: '/check',
-      component: Check,
-      name: 'Check',
-      beforeEnter: noRequireFollowingCheck
+      path: '/consult',
+      component: Consult,
+      name: 'Consult'
+    },
+    {
+      path: '/dashboard',
+      component: Dashboard,
+      name: 'Dashboard',
+      beforeEnter: requireFollowingCheck
+    },
+    {
+      path: '/task',
+      component: Task,
+      name: 'Task'
     }
   ]
 })
