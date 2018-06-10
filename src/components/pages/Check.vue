@@ -6,10 +6,26 @@
       <v-stepper-content step="1">
         <v-layout row wrap class="px-10">
           <v-flex xs12 md5 lg5>
-            <v-text-field v-model="check.name" name="checkName" label="Check" hint="Check name is required" value="Input text" required></v-text-field>
+            <v-text-field
+              v-model="check.name"
+              :rules="step1Rules.name"
+              name="checkName"
+              label="Check"
+              hint="Check name is required"
+              value="Input text"
+              required></v-text-field>
           </v-flex>
           <v-flex xs12 md5 lg6 offset-lg1>
-            <v-select :items="aircraftList" v-model="check.aircraft" label="Aircraft" item-text="name" item-value="name" return-object required autocomplete></v-select>
+            <v-select
+              :items="aircraftList"
+              v-model="check.aircraft"
+              :rules="step1Rules.aircraft"
+              label="Aircraft"
+              item-text="name"
+              item-value="name"
+              return-object
+              required
+              autocomplete></v-select>
           </v-flex>
           <v-flex xs12 md5 lg5>
             <v-menu
@@ -25,6 +41,7 @@
                 slot="activator"
                 label="Start date"
                 v-model="check.startDate"
+                :rules="step1Rules.startDate"
                 prepend-icon="event"
                 readonly
               ></v-text-field>
@@ -45,15 +62,21 @@
                 slot="activator"
                 label="Finish date"
                 v-model="check.finishDate"
+                :rules="step1Rules.finishDate"
                 prepend-icon="event"
                 readonly
               ></v-text-field>
-              <v-date-picker v-model="check.finishDate"></v-date-picker>
+              <v-date-picker
+                v-model="check.finishDate"
+                :allowed-dates="allowedDates"></v-date-picker>
             </v-menu>
           </v-flex>
         </v-layout>
         <v-btn @click.native="cancelProgress">Cancel</v-btn>
-        <v-btn color="primary" @click.native="nextStep2" :disabled="!completeStep1">Next</v-btn>
+        <v-btn
+          color="primary"
+          @click.native="nextStep2"
+          :disabled="!validStep1">Next</v-btn>
       </v-stepper-content>
 
       <v-stepper-step step="2" :complete="step > 2">Import WP</v-stepper-step>
@@ -68,7 +91,7 @@
           </v-card-text>
         </v-card>
         <v-btn @click.native="step = 1">Back</v-btn>
-        <v-btn color="primary" @click.native="nextStep3()" :disabled="!completeStep2">Next</v-btn>
+        <v-btn color="primary" @click.native="nextStep3()" :disabled="!validStep2">Next</v-btn>
       </v-stepper-content>
 
       <v-stepper-step step="3" :complete="step > 3">Review and submit</v-stepper-step>
@@ -84,7 +107,7 @@
           </v-card-text>
         </v-card>
         <v-btn @click.native="step = 2">Back</v-btn>
-        <v-btn color="primary" @click.native="submit()" :disabled="!completeStep3">submit</v-btn>
+        <v-btn color="primary" @click.native="submit()" :disabled="!validStep3">submit</v-btn>
       </v-stepper-content>
 
     </v-stepper>
@@ -125,9 +148,14 @@ export default {
       title: '',
       check: new Check(),
       step: 1,
-      completeStep1: true,
-      completeStep2: true,
-      completeStep3: true,
+      step1Rules: {
+        name: [v => !!v || 'Check name is required'],
+        aircraft: [v => !!v || 'Aircraft is required'],
+        startDate: [v => !!v || 'Start Date is required'],
+        finishDate: [v => !!v || 'Finish Date is required']
+      },
+      validStep2: true,
+      validStep3: true,
       ams: [],
       workpack: [],
       updatedWorkpack: []
@@ -143,6 +171,9 @@ export default {
       return this.updatedWorkpack.filter((item) => {
         return item.zoneDivision.indexOf('N/A') === 0
       }).length
+    },
+    validStep1 () {
+      return this.check.name !== '' && this.check.aircraft !== '' && this.check.startDate !== '' && this.check.finishDate !== ''
     }
   },
   methods: {
@@ -281,6 +312,11 @@ export default {
     },
     onConfirm () {
       this.$router.push({ name: 'Checks' })
+    },
+    allowedDates (val) {
+      let min = new Date(this.check.startDate)
+      let current = new Date(val)
+      return new Date(current - min) >= 0
     }
   },
   created () {

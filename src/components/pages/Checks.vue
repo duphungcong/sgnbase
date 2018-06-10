@@ -2,9 +2,10 @@
   <v-flex xs12>
     <v-card class="elevation-0">
       <v-card-title>
-        <v-btn fab small dark class="red" @click.native="addCheck">
+        <!-- <v-btn fab small dark class="red" @click.native="addCheck">
           <v-icon>add</v-icon>
-        </v-btn>
+        </v-btn> -->
+        <v-btn depressed small dark color="primary" @click.native="addCheck">New Check</v-btn>
         <v-spacer></v-spacer>
         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
         &nbsp;
@@ -18,7 +19,7 @@
           <td class="body-2">{{ formatDate(props.item.finishDate) }}</td>
           <td class="body-2">{{ remainDay(props.item.startDate, props.item.finishDate) }}</td>
           <td class="text-xs-right">
-            <v-btn icon class="mx-0" @click.native="followCheck(props.item.id)">
+            <!-- <v-btn icon class="mx-0" @click.native="followCheck(props.item.id)">
               <v-tooltip bottom>
                 <v-icon color="blue" slot="activator">touch_app</v-icon><span>follow</span>
               </v-tooltip>
@@ -28,11 +29,14 @@
                   <v-icon color="blue" slot="activator">edit</v-icon><span>edit</span>
               </v-tooltip>
             </v-btn>
-            <v-btn icon class="mx-0" @click.native="deleteCheck(props.item.id)">
+            <v-btn icon class="mx-0" @click.native="confirmDelete(props.item.id)">
               <v-tooltip bottom>
                   <v-icon color="red" slot="activator">delete</v-icon><span>delete</span>
               </v-tooltip>
-            </v-btn>
+            </v-btn> -->
+            <v-btn depressed small outline color="primary" @click.native="followCheck(props.item.id)">Follow</v-btn>
+            <v-btn depressed small outline color="primary" @click.native="zoneDivision(props.item.id)">ZD</v-btn>
+            <v-btn depressed small outline color="error" @click.native="confirmDelete(props.item.id)">Delete</v-btn>
           </td>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -51,6 +55,8 @@
 <script>
 
 import { mapState, mapMutations } from 'vuex'
+import firebase from 'firebase/app'
+import 'firebase/database'
 import ConfirmDialog from '@/components/ConfirmDialog'
 
 export default {
@@ -61,6 +67,7 @@ export default {
     return {
       dialog: false,
       dialogTitle: '',
+      deletedCheckId: null,
       search: '',
       pagination: {
         page: 1,
@@ -83,6 +90,7 @@ export default {
     ...mapState(['checks'])
   },
   methods: {
+    ...mapMutations(['setLoading']),
     ...mapMutations('confirmdialog', ['showDialog', 'closeDialog']),
     addCheck () {
       this.$router.push({ name: 'Check' })
@@ -90,23 +98,45 @@ export default {
     editCheck (checkId) {
       this.$router.push({ name: 'Check', params: { id: checkId } })
     },
-    deleteCheck (checkId) {
+    deleteCheck () {
+      this.setLoading(true)
+      let removes = {}
+      removes['/checks/' + this.deletedCheckId] = null
+      removes['/workpacks/' + this.deletedCheckId] = null
+      firebase.database().ref().update(removes).then(
+        (data) => {
+          this.onCancel()
+          this.setLoading(false)
+        },
+        (error) => {
+          console.log(error)
+          this.onCancel()
+          this.setLoading(false)
+        }
+      )
+    },
+    confirmDelete (checkId) {
       this.dialogTitle = 'Do you want to delete this check?'
+      this.deletedCheckId = checkId
+      console.log(this.deletedCheckId)
       this.dialog = true
     },
     onCancel () {
       this.dialog = false
       this.dialogTitle = ''
+      this.deletedCheckId = null
     },
     onConfirm () {
-      this.onCancel()
+      this.deleteCheck()
     },
     followCheck (checkId) {
       this.$store.dispatch('followCheck', checkId)
     },
     formatDate (dateStr) {
-      let date = new Date(dateStr)
-      return date.toDateString()
+      if (!dateStr) return null
+
+      const [year, month, day] = dateStr.split('-')
+      return day + '/' + month + '/' + year
     },
     remainDay (startDate, finishDate) {
       let start = new Date(startDate)
