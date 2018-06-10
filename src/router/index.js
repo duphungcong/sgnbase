@@ -4,7 +4,7 @@ import store from '@/store'
 
 import Auth from '@/components/Auth'
 
-import About from '@/components/pages/About'
+import Consult from '@/components/pages/Consult'
 import Dashboard from '@/components/pages/Dashboard'
 import Checks from '@/components/pages/Checks'
 import Check from '@/components/pages/Check'
@@ -49,9 +49,9 @@ const router = new Router({
     { path: '/', redirect: '/dashboard', name: 'root' },
     { path: '*', redirect: '/dashboard' },
     {
-      path: '/about',
-      component: About,
-      name: 'About'
+      path: '/consult',
+      component: Consult,
+      name: 'Consult'
     },
     {
       path: '/auth',

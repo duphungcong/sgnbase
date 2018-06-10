@@ -54,8 +54,12 @@ const actions = {
     if (context.state.extLoad) context.commit('setLoading', true)
     firebase.database().ref('checks').on('value',
       (data) => {
-        const checks = Object.values(data.val()) || []
-        context.commit('setChecks', checks)
+        const obj = data.val()
+        if (obj !== null && obj !== undefined) {
+          context.commit('setChecks', Object.values(data.val()) || [])
+        } else {
+          context.commit('setChecks', [])
+        }
         if (context.state.extLoad) {
           context.commit('setLoading', false)
           context.commit('setExtLoad', false)

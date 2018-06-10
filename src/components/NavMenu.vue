@@ -73,7 +73,7 @@ export default {
       ],
       noCheckMenu: [
         { title: 'Checks', icon: 'contacts', route: 'Checks' },
-        { title: 'AMS', icon: 'contacts', route: 'ams' }
+        { title: 'Mac Consult', icon: 'contacts', route: 'Consult' }
       ]
     }
   },

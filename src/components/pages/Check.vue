@@ -72,8 +72,9 @@
             </v-menu>
           </v-flex>
         </v-layout>
-        <v-btn @click.native="cancelProgress">Cancel</v-btn>
+        <v-btn depressed small @click.native="cancelProgress">Cancel</v-btn>
         <v-btn
+          depressed small
           color="primary"
           @click.native="nextStep2"
           :disabled="!validStep1">Next</v-btn>
@@ -90,8 +91,8 @@
             <p>Number of task cards: {{ numberTaskCard }}</p>
           </v-card-text>
         </v-card>
-        <v-btn @click.native="step = 1">Back</v-btn>
-        <v-btn color="primary" @click.native="nextStep3()" :disabled="!validStep2">Next</v-btn>
+        <v-btn depressed small @click.native="step = 1">Back</v-btn>
+        <v-btn depressed small color="primary" @click.native="nextStep3()" :disabled="!validStep2">Next</v-btn>
       </v-stepper-content>
 
       <v-stepper-step step="3" :complete="step > 3">Review and submit</v-stepper-step>
@@ -106,8 +107,8 @@
             <p>Task cards do not have Zone Division: <strong>{{ numberTaskCardNA }}</strong></p>
           </v-card-text>
         </v-card>
-        <v-btn @click.native="step = 2">Back</v-btn>
-        <v-btn color="primary" @click.native="submit()" :disabled="!validStep3">submit</v-btn>
+        <v-btn depressed small @click.native="step = 2">Back</v-btn>
+        <v-btn depressed small color="primary" @click.native="submit()" :disabled="!validStep3">submit</v-btn>
       </v-stepper-content>
 
     </v-stepper>
@@ -246,7 +247,7 @@ export default {
     scanZoneDivision () {
       return this.workpack.map(item => {
         const task = this.ams.find(el => {
-          return el.taskName === item.taskName
+          return el.name === item.name
         })
         let additionalData
         if (task) {
@@ -293,7 +294,7 @@ export default {
         const wsname = wb.SheetNames[0]
         const ws = wb.Sheets[wsname]
         /* Convert array of arrays */
-        const data = XLSX.utils.sheet_to_json(ws, { header: ['wpItem', 'taskName', 'zone', 'taskType', 'taskTitle'] })
+        const data = XLSX.utils.sheet_to_json(ws, { header: ['wpItem', 'name', 'zone', 'type', 'title'] })
         /* Update state */
         data.shift()
         this.workpack = data
