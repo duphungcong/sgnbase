@@ -110,11 +110,11 @@ export default {
       search: '',
       workpackByTab: [],
       headerTask: [
-        { text: 'TITLE', left: true, value: 'title' },
-        { text: 'STATUS', left: true, value: 'status' },
-        { text: 'NOTE', left: true, value: 'notes' },
-        { text: 'WP ITEM', left: true, value: 'wpItem' },
-        { text: 'TYPE', left: true, value: 'type' },
+        { text: 'TITLE', left: true, value: 'title', width: '20%' },
+        { text: 'STATUS', left: true, value: 'status', width: '15%' },
+        { text: 'NOTES', left: true, value: 'notes', width: '15%' },
+        { text: 'WP ITEM', left: true, value: 'wpItem', width: '15%' },
+        { text: 'TYPE', left: true, value: 'type', width: '5%' },
         { text: 'ZONE DIVISION', left: true, value: 'zoneDivision' }
       ],
       paginationTask: {
