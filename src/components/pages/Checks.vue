@@ -16,8 +16,8 @@
           <td class="body-2">{{ formatDate(props.item.finishDate) }}</td>
           <td class="body-2">{{ remainDay(props.item.startDate, props.item.finishDate) }}</td>
           <td class="text-xs-right">
-            <v-btn depressed small outline color="primary" @click.native="followCheck(props.item.id)">Follow</v-btn>
-            <v-btn depressed small outline color="error" @click.native="confirmDelete(props.item.id)">Delete</v-btn>
+            <v-btn flat outline small color="primary" @click.native="followCheck(props.item.id)">Follow</v-btn>
+            <v-btn flat outline  small color="error" @click.native="confirmDelete(props.item.id)">Delete</v-btn>
           </td>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">

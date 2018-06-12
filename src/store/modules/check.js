@@ -19,9 +19,12 @@ const actions = {
     if (context.state.aircraftList.length === 0) {
       firebase.database().ref('aircraft').on('value',
         (data) => {
-          const list = Object.values(data.val()) || []
-          // console.log(list)
-          context.commit('setAircraftList', list)
+          const obj = data.val()
+          if (obj !== null && obj !== undefined) {
+            context.commit('setAircraftList', Object.values(obj) || [])
+          } else {
+            context.commit('setAircraftList', [])
+          }
         },
         (error) => {
           console.log('get aircraft list - ' + error)

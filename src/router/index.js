@@ -8,6 +8,7 @@ import Checks from '@/components/pages/Checks'
 import Consult from '@/components/pages/Consult'
 import Dashboard from '@/components/pages/Dashboard'
 import Task from '@/components/pages/Task'
+import Tasks from '@/components/pages/Tasks'
 
 Vue.use(Router)
 
@@ -81,6 +82,12 @@ const router = new Router({
       path: '/task',
       component: Task,
       name: 'Task'
+    },
+    {
+      path: '/tasks',
+      component: Tasks,
+      name: 'Tasks',
+      beforeEnter: requireFollowingCheck
     }
   ]
 })

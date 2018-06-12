@@ -72,9 +72,9 @@
             </v-menu>
           </v-flex>
         </v-layout>
-        <v-btn depressed small @click.native="cancelProgress">Cancel</v-btn>
+        <v-btn flat outline small @click.native="cancelProgress">Cancel</v-btn>
         <v-btn
-          depressed small
+          flat outline small
           color="primary"
           @click.native="nextStep2"
           :disabled="!validStep1">Next</v-btn>
@@ -91,8 +91,8 @@
             <p>Number of task cards: {{ numberTaskCard }}</p>
           </v-card-text>
         </v-card>
-        <v-btn depressed small @click.native="step = 1">Back</v-btn>
-        <v-btn depressed small color="primary" @click.native="nextStep3()" :disabled="!validStep2">Next</v-btn>
+        <v-btn flat outline small @click.native="step = 1">Back</v-btn>
+        <v-btn flat outline small color="primary" @click.native="nextStep3()" :disabled="!validStep2">Next</v-btn>
       </v-stepper-content>
 
       <v-stepper-step step="3" :complete="step > 3">Review and submit</v-stepper-step>
@@ -107,8 +107,8 @@
             <p>Task cards do not have Zone Division: <strong>{{ numberTaskCardNA }}</strong></p>
           </v-card-text>
         </v-card>
-        <v-btn depressed small @click.native="step = 2">Back</v-btn>
-        <v-btn depressed small color="primary" @click.native="submit()" :disabled="!validStep3">submit</v-btn>
+        <v-btn flat outline small @click.native="step = 2">Back</v-btn>
+        <v-btn flat outline small color="primary" @click.native="submit()" :disabled="!validStep3">submit</v-btn>
       </v-stepper-content>
 
     </v-stepper>

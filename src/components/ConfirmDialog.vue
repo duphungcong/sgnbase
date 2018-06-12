@@ -3,8 +3,8 @@
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
       <v-card-actions>
-        <v-btn class="red--text darken-1" flat="flat" @click.native="$emit('onConfirm')">Confirm</v-btn>
-        <v-btn class="blue--text darken-1" flat="flat" @click.native="$emit('onCancel')">Cancel</v-btn>
+        <v-btn class="blue--text darken-1" flat @click.native="$emit('onConfirm')">Yes</v-btn>
+        <v-btn class="blue--text darken-1" flat @click.native="$emit('onCancel')">No</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

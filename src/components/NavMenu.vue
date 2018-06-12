@@ -31,8 +31,6 @@
         </v-list>
       </v-toolbar>
 
-       <v-divider></v-divider>
-
       <v-list-tile v-for="item in itemMenu" :key="item.title" @click="goTo(item.route)">
         <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
@@ -41,8 +39,6 @@
           <v-list-tile-title>{{ item.title }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-
-      <v-divider></v-divider>
 
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
@@ -68,7 +64,8 @@ export default {
     return {
       mini: false,
       checkMenu: [
-        { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' }
+        { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' },
+        { title: 'Tasks', icon: 'dashboard', route: 'Tasks' }
       ],
       noCheckMenu: [
         { title: 'Checks', icon: 'contacts', route: 'Checks' },

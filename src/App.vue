@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <template v-if="!isAuthenticated">
-      <router-view></router-view>
+      <v-content>
+        <router-view></router-view>
+      </v-content>
     </template>
     <template v-else>
       <nav-menu
@@ -19,13 +21,7 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-content>
-        <v-container fluid ma-0 pa-0>
-          <v-layout>
-            <v-flex row>
-              <router-view></router-view>
-            </v-flex>
-          </v-layout>
-        </v-container>
+        <router-view></router-view>
       </v-content>
     </template>
     <snackbar></snackbar>
