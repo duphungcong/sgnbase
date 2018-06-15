@@ -56,7 +56,7 @@ const actions = {
     if (context.state.extLoad) context.commit('setLoading', true)
     firebase.database().ref('checks').on('value',
       (data) => {
-        const obj = data.val()
+        let obj = data.val()
         if (obj !== null && obj !== undefined) {
           context.commit('setChecks', Object.values(obj) || [])
         } else {
@@ -79,7 +79,8 @@ const actions = {
   getWorkpack (context) {
     firebase.database().ref('workpacks/' + context.state.checkId).on('value',
       (data) => {
-        const obj = data.val()
+        console.log('change wp')
+        let obj = data.val()
         if (obj !== null && obj !== undefined) {
           context.commit('setWorkpack', Object.values(obj) || [])
         } else {
@@ -98,7 +99,8 @@ const getters = {
   error: state => state.error,
   checkId: state => state.checkId,
   isFollowingCheck: state => state.checkId !== null && state.checkId !== undefined,
-  checks: state => state.checks
+  checks: state => state.checks,
+  check: state => state.checks.find(item => item.id === state.checkId)
 }
 
 export default new Vuex.Store({

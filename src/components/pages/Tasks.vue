@@ -18,6 +18,36 @@
       <v-tab href="#tab-9">Removed</v-tab>
     </v-tabs>
 
+    <v-card class="elevation-0">
+      <v-card-actions>
+        <v-layout column>
+          <v-flex>
+            <v-text-field
+              prepend-icon="search"
+              label="Search"
+              single-line hide-details
+              v-model="search"></v-text-field>
+          </v-flex>
+          <v-flex>
+            <v-select
+              prepend-icon="search"
+              :items="check.shifts"
+              clearable item-text="number"
+              item-value="number"
+              label="Shift"></v-select>
+          </v-flex>
+          <v-flex>
+            <v-select
+              prepend-icon="search"
+              :items="check.shifts"
+              clearable item-text="number"
+              item-value="number"
+              label="Shift"></v-select>
+          </v-flex>
+        </v-layout>
+      </v-card-actions>
+    </v-card>
+
     <v-data-table
       :headers="headerTask"
       :items="workpackByTab"
@@ -72,12 +102,22 @@
         </v-card>
       </template>
     </v-data-table>
+
+    <shift-dialog
+      :dialog="shiftDialog"
+      :all="check.shifts"
+      :current="task.shifts"
+      @save="saveEditShift($event)"
+      @cancel="cancelEditShift"></shift-dialog>
   </v-flex>
 </template>
 
 <script>
 
 import { mapState } from 'vuex'
+import firebase from 'firebase/app'
+import 'firebase/database'
+import ShiftDialog from '@/components/ShiftDialog'
 
 const zoneByTab = (tab) => ({
   'tab-0': 'ALL',
@@ -104,8 +144,13 @@ const zoneSelection = [
 ]
 
 export default {
+  components: {
+    ShiftDialog
+  },
   data () {
     return {
+      task: {},
+      shiftDialog: false,
       tabs: 'tab-0',
       search: '',
       workpackByTab: [],
@@ -127,15 +172,51 @@ export default {
     }
   },
   computed: {
-    ...mapState(['workpack'])
+    ...mapState(['workpack']),
+    check () {
+      return this.$store.getters.check
+    },
+    currentShift () {
+      let today = Date.now()
+      let start = new Date(this.check.startDate)
+      if (today < start) {
+        return 0
+      }
+      let diff = new Date(today - start)
+      return diff.getUTCDate()
+    }
   },
   watch: {
     tabs (value) {
       this.showTab(value)
+    },
+    workpack (value) {
+      this.showTab(this.tabs)
     }
   },
   methods: {
-    editShift () {},
+    editShift (item) {
+      this.task = Object.assign({}, item)
+      this.shiftDialog = true
+    },
+    saveEditShift (shifts) {
+      this.task.shifts = shifts.sort((a, b) => {
+        return a - b
+      })
+      firebase.database().ref('workpacks/' + this.check.id + '/' + this.task.id + '/shifts').set(this.task.shifts).then(
+        (data) => {
+          this.shiftDialog = false
+        },
+        (error) => {
+          console.log('ERROR - tasks - saveEditShift -' + error.message)
+          this.shiftDialog = false
+        }
+      )
+    },
+    cancelEditShift () {
+      this.shiftDialog = false
+      this.task = {}
+    },
     editTask () {},
     moveTask () {},
     deleteTask () {},

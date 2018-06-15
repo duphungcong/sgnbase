@@ -10,19 +10,33 @@
         :isFollowingCheck="isFollowingCheck"
         @goTo="goTo">
       </nav-menu>
+
       <v-toolbar
         dense
         app
         dark
         color="primary"
         class="elevation-0">
+
         <v-toolbar-title class="ml-0 pl-3">
           <v-toolbar-side-icon @click.native.stop="toggleMenu"></v-toolbar-side-icon>
         </v-toolbar-title>
+
+        <!-- <v-spacer></v-spacer>
+
+        <v-btn icon>
+          <v-icon>apps</v-icon>
+        </v-btn>
+        <v-btn icon>
+          <v-icon>notifications</v-icon>
+        </v-btn> -->
+
       </v-toolbar>
+
       <v-content>
         <router-view></router-view>
       </v-content>
+
     </template>
     <snackbar></snackbar>
     <loading-progress></loading-progress>
