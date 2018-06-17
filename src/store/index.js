@@ -18,7 +18,8 @@ const state = {
   checkId: null,
   checks: [],
   extLoad: false,
-  workpack: []
+  workpack: [],
+  eo: []
 }
 
 const mutations = {
@@ -37,6 +38,9 @@ const mutations = {
   setWorkpack (state, payload) {
     state.workpack = payload
   },
+  setEo (state, payload) {
+    state.eo = payload
+  },
   setExtLoad (state, payload) {
     state.extLoad = payload
   }
@@ -46,6 +50,7 @@ const actions = {
   followCheck (context, payload) {
     context.commit('setCheckId', payload)
     context.dispatch('getWorkpack')
+    context.dispatch('getEo')
   },
   unFollowCheck (context) {
     context.commit('setCheckId', null)
@@ -79,12 +84,28 @@ const actions = {
   getWorkpack (context) {
     firebase.database().ref('workpacks/' + context.state.checkId).on('value',
       (data) => {
-        console.log('change wp')
+        console.log('reload wp')
         let obj = data.val()
         if (obj !== null && obj !== undefined) {
           context.commit('setWorkpack', Object.values(obj) || [])
         } else {
           context.commit('setWorkpack', [])
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+  getEo (context) {
+    firebase.database().ref('eo').on('value',
+      (data) => {
+        console.log('reload eo')
+        let obj = data.val()
+        if (obj !== null && obj !== undefined) {
+          context.commit('setEo', Object.values(obj) || [])
+        } else {
+          context.commit('setEo', [])
         }
       },
       (error) => {

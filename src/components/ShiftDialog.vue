@@ -6,17 +6,17 @@
       </v-card-title>
       <v-card-text>
         <v-layout row wrap>
-          <v-flex lg1 md1 sm1 xs1 v-for="shift in all" :key="shift.number">
+          <v-flex lg1 md1 sm1 xs1 v-for="shift in list" :key="shift.number">
             <v-checkbox :label="shift.number.toString()" v-model="shifts" :value="shift.number"></v-checkbox>
           </v-flex>
         </v-layout>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue" flat @click.native="cancel()">Cancel</v-btn>
-        <v-btn color="blue" depressed dark @click.native="save()" :disabled="inValid">Save</v-btn>
+        <v-btn color="blue" small flat @click.native="cancel()">Cancel</v-btn>
+        <v-btn color="blue" small depressed dark @click.native="save()" :disabled="inValid">Save</v-btn>
       </v-card-actions>
-      <v-alert :value="inValid" type="error">
+      <v-alert :value="inValid" type="error" class="elevation-0">
         A least one shift must be selected
       </v-alert>
     </v-card>
@@ -27,7 +27,7 @@
 export default {
   props: {
     dialog: false,
-    all: {
+    list: {
       type: Array,
       default: () => {
         return []
@@ -47,8 +47,8 @@ export default {
     }
   },
   watch: {
-    current (value) {
-      this.shifts = Object.assign([], value)
+    dialog (value) {
+      value && (this.shifts = Object.assign([], this.current))
     },
     shifts (value) {
       value.length === 0 ? this.inValid = true : this.inValid = false

@@ -73,6 +73,11 @@
                   <v-icon color="blue" slot="activator">edit</v-icon><span>edit</span>
               </v-tooltip>
             </v-btn>
+            <v-btn icon class="mx-0" @click.native="linkTask(props.item)" v-if="isEo(props.item)">
+              <v-tooltip bottom>
+                  <v-icon color="blue" slot="activator">link</v-icon><span>link</span>
+              </v-tooltip>
+            </v-btn>
             <v-menu transition="slide-x-transition">
               <v-btn icon class="mx-0" slot="activator">
                 <v-tooltip bottom>
@@ -107,7 +112,7 @@
 
     <shift-dialog
       :dialog="shiftDialog"
-      :all="check.shifts"
+      :list="check.shifts"
       :current="task.shifts"
       @save="saveEditShift($event)"
       @cancel="closeEditShift">
@@ -117,9 +122,15 @@
       :dialog="taskDialog"
       :editMode="true"
       :current="task"
-      @save="saveEditTask($event)"
+      @save="submitEditTask($event)"
       @cancel="closeEditTask">
     </task-dialog>
+
+    <eo-dialog
+      :dialog="eoDialog"
+      :list="eo"
+      @cancel="closeLinkTask">>
+    </eo-dialog>
   </v-flex>
 </template>
 
@@ -130,6 +141,7 @@ import firebase from 'firebase/app'
 import 'firebase/database'
 import ShiftDialog from '@/components/ShiftDialog'
 import TaskDialog from '@/components/TaskDialog'
+import EoDialog from '@/components/EoDialog'
 
 const zoneByTab = (tab) => ({
   'tab-0': 'ALL',
@@ -147,13 +159,15 @@ const zoneByTab = (tab) => ({
 export default {
   components: {
     ShiftDialog,
-    TaskDialog
+    TaskDialog,
+    EoDialog
   },
   data () {
     return {
       task: {},
       shiftDialog: false,
       taskDialog: false,
+      eoDialog: false,
       tabs: 'tab-0',
       search: '',
       workpackByTab: [],
@@ -179,9 +193,15 @@ export default {
     }
   },
   computed: {
-    ...mapState(['workpack']),
+    ...mapState(['workpack', 'eo']),
     check () {
       return this.$store.getters.check
+    },
+    ref () {
+      return {
+        ams: 'ams' + this.check.aircraft.type,
+        workpack: 'workpacks/' + this.check.id
+      }
     },
     currentShift () {
       let today = Date.now()
@@ -216,7 +236,7 @@ export default {
       let sortedShifts = shifts.sort((a, b) => {
         return a - b
       })
-      firebase.database().ref('workpacks/' + this.check.id + '/' + this.task.id + '/shifts').set(sortedShifts).then(
+      firebase.database().ref(this.ref.workpack + '/' + this.task.id + '/shifts').set(sortedShifts).then(
         (data) => {
           this.closeEditShift()
         },
@@ -234,10 +254,25 @@ export default {
       this.taskDialog = false
       setTimeout(() => {
         this.task = {}
-      }, 300)
+      }, 100)
+    },
+    isEo (task) {
+      return task.name.indexOf('VN ') === 0
+    },
+    submitEditTask (task) {
+      if (!this.isEo(task)) {
+        if (task.taskId === '') {
+          this.createAmsTask(task, this.saveEditTask)
+        } else {
+          this.updateAmsTask(task, this.saveEditTask)
+        }
+      } else {
+        this.saveEditTask(task)
+      }
     },
     saveEditTask (task) {
-      firebase.database().ref('workpacks/' + this.check.id + '/' + this.task.id).set(task).then(
+      console.log('saving edit task')
+      firebase.database().ref(this.ref.workpack + '/' + task.id).set(task).then(
         (data) => {
           this.closeEditTask()
         },
@@ -246,6 +281,60 @@ export default {
           this.closeEditTask()
         }
       )
+    },
+    updateAmsTask (task, callback) {
+      let updatedData = {
+        amsMH: task.amsMH,
+        macMH: task.macMH,
+        men: task.men,
+        hour: task.hour,
+        zoneDivision: task.zoneDivision,
+        remarks: task.remarks
+      }
+      firebase.database().ref(this.ref.ams + '/' + task.taskId).update(updatedData).then(
+        (data) => {
+          console.log('call callback update')
+          callback(task)
+        },
+        (error) => {
+          console.log('ERROR - tasks - updateAmsTask -' + error.message)
+        }
+      )
+    },
+    createAmsTask (task, callback) {
+      let amsTask = {
+        amsMH: task.amsMH,
+        macMH: task.macMH,
+        men: task.men,
+        hour: task.hour,
+        name: task.name,
+        title: task.title,
+        type: task.type,
+        zone: task.zone,
+        zoneDivision: task.zoneDivision,
+        remarks: task.remarks
+      }
+      amsTask.id = firebase.database().ref(this.ref.ams).push().key
+
+      firebase.database().ref(this.ref.ams + '/' + amsTask.id).set(amsTask).then(
+        (data) => {
+          console.log('call callback create')
+          callback(Object.assign(task, { taskId: amsTask.id }))
+        },
+        (error) => {
+          console.log('ERROR - tasks - createAmsTask -' + error.message)
+        }
+      )
+    },
+    linkTask (item) {
+      this.task = Object.assign({}, item)
+      this.eoDialog = true
+    },
+    closeLinkTask () {
+      this.eoDialog = false
+      setTimeout(() => {
+        this.task = {}
+      }, 100)
     },
     moveTask () {},
     deleteTask () {},

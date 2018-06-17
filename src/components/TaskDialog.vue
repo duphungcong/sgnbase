@@ -22,17 +22,20 @@
             <v-text-field type="number" label="HOUR" v-model="task.hour"></v-text-field>
           </v-flex>
           <v-flex xs12 sm12 md12>
-            <v-text-field multi-line rows="2" label="ZONE DIVISION" v-model="task.zoneDivision"></v-text-field>
+            <v-text-field multi-line rows="1" label="ZONE DIVISION" v-model="task.zoneDivision"></v-text-field>
           </v-flex>
           <v-flex xs12 sm12 md12>
-            <v-text-field multi-line rows="2" no-resize label="NOTES" v-model="task.notes"></v-text-field>
+            <v-text-field multi-line rows="1" label="REMARKS" v-model="task.remarks"></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm12 md12>
+            <v-text-field multi-line rows="1" no-resize label="NOTES" v-model="task.notes"></v-text-field>
           </v-flex>
         </v-layout>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue" flat @click.native="cancel()">Cancel</v-btn>
-        <v-btn color="blue" depressed dark @click.native="save()">Save</v-btn>
+        <v-btn color="blue" small flat @click.native="cancel()">Cancel</v-btn>
+        <v-btn color="blue" small depressed dark @click.native="save()">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
