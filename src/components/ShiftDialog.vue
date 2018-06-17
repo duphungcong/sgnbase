@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="800">
+  <v-dialog v-model="dialog" max-width="800" persistent>
     <v-card>
       <v-card-title class="blue">
         <h4 class="white--text">Shift Selection</h4>
@@ -14,8 +14,11 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue" flat @click.native="cancel()">Cancel</v-btn>
-        <v-btn color="blue" flat @click.native="save()">Save</v-btn>
+        <v-btn color="blue" depressed dark @click.native="save()" :disabled="inValid">Save</v-btn>
       </v-card-actions>
+      <v-alert :value="inValid" type="error">
+        A least one shift must be selected
+      </v-alert>
     </v-card>
   </v-dialog>
 </template>
@@ -39,12 +42,16 @@ export default {
   },
   data () {
     return {
+      inValid: false,
       shifts: Object.assign([], this.current)
     }
   },
   watch: {
     current (value) {
       this.shifts = Object.assign([], value)
+    },
+    shifts (value) {
+      value.length === 0 ? this.inValid = true : this.inValid = false
     }
   },
   methods: {

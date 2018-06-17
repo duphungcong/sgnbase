@@ -20,29 +20,31 @@
 
     <v-card class="elevation-0">
       <v-card-actions>
-        <v-layout column>
-          <v-flex>
+        <v-layout row>
+          <v-flex lg3>
+            <v-select
+              prepend-icon="search"
+              :items="check.shifts"
+              clearable item-text="number"
+              item-value="number"
+              label="Shift"></v-select>
+          </v-flex>
+          <v-flex lg1></v-flex>
+          <v-flex lg3>
+            <v-select
+              prepend-icon="search"
+              :items="status"
+              clearable item-text="number"
+              item-value="number"
+              label="Status"></v-select>
+          </v-flex>
+          <v-flex lg1></v-flex>
+          <v-flex lg4>
             <v-text-field
               prepend-icon="search"
               label="Search"
               single-line hide-details
               v-model="search"></v-text-field>
-          </v-flex>
-          <v-flex>
-            <v-select
-              prepend-icon="search"
-              :items="check.shifts"
-              clearable item-text="number"
-              item-value="number"
-              label="Shift"></v-select>
-          </v-flex>
-          <v-flex>
-            <v-select
-              prepend-icon="search"
-              :items="check.shifts"
-              clearable item-text="number"
-              item-value="number"
-              label="Shift"></v-select>
           </v-flex>
         </v-layout>
       </v-card-actions>
@@ -108,7 +110,16 @@
       :all="check.shifts"
       :current="task.shifts"
       @save="saveEditShift($event)"
-      @cancel="cancelEditShift"></shift-dialog>
+      @cancel="closeEditShift">
+    </shift-dialog>
+
+    <task-dialog
+      :dialog="taskDialog"
+      :editMode="true"
+      :current="task"
+      @save="saveEditTask($event)"
+      @cancel="closeEditTask">
+    </task-dialog>
   </v-flex>
 </template>
 
@@ -118,6 +129,7 @@ import { mapState } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import ShiftDialog from '@/components/ShiftDialog'
+import TaskDialog from '@/components/TaskDialog'
 
 const zoneByTab = (tab) => ({
   'tab-0': 'ALL',
@@ -132,25 +144,16 @@ const zoneByTab = (tab) => ({
   'tab-9': 'REMOVED'
 })[tab]
 
-const zoneSelection = [
-  'N/A',
-  '100-200-800',
-  '300-400',
-  '500-600-700',
-  'AVIONIC',
-  'STRUCTURE',
-  'CABIN',
-  'CLEANING'
-]
-
 export default {
   components: {
-    ShiftDialog
+    ShiftDialog,
+    TaskDialog
   },
   data () {
     return {
       task: {},
       shiftDialog: false,
+      taskDialog: false,
       tabs: 'tab-0',
       search: '',
       workpackByTab: [],
@@ -168,7 +171,11 @@ export default {
         rowsPerPage: 10,
         sortBy: 'zoneDivision'
       },
-      zoneSelection: zoneSelection
+      zoneSelection: this.appConst.zoneSelection,
+      status: this.appConst.status,
+      selectedShift: [],
+      selectedStatus: []
+
     }
   },
   computed: {
@@ -199,25 +206,47 @@ export default {
       this.task = Object.assign({}, item)
       this.shiftDialog = true
     },
+    closeEditShift () {
+      this.shiftDialog = false
+      setTimeout(() => {
+        this.task = {}
+      }, 300)
+    },
     saveEditShift (shifts) {
-      this.task.shifts = shifts.sort((a, b) => {
+      let sortedShifts = shifts.sort((a, b) => {
         return a - b
       })
-      firebase.database().ref('workpacks/' + this.check.id + '/' + this.task.id + '/shifts').set(this.task.shifts).then(
+      firebase.database().ref('workpacks/' + this.check.id + '/' + this.task.id + '/shifts').set(sortedShifts).then(
         (data) => {
-          this.shiftDialog = false
+          this.closeEditShift()
         },
         (error) => {
           console.log('ERROR - tasks - saveEditShift -' + error.message)
-          this.shiftDialog = false
+          this.closeEditShift()
         }
       )
     },
-    cancelEditShift () {
-      this.shiftDialog = false
-      this.task = {}
+    editTask (item) {
+      this.task = Object.assign({}, item)
+      this.taskDialog = true
     },
-    editTask () {},
+    closeEditTask () {
+      this.taskDialog = false
+      setTimeout(() => {
+        this.task = {}
+      }, 300)
+    },
+    saveEditTask (task) {
+      firebase.database().ref('workpacks/' + this.check.id + '/' + this.task.id).set(task).then(
+        (data) => {
+          this.closeEditTask()
+        },
+        (error) => {
+          console.log('ERROR - tasks - saveEditTask -' + error.message)
+          this.closeEditTask()
+        }
+      )
+    },
     moveTask () {},
     deleteTask () {},
     showLog () {},
