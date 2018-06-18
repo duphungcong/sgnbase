@@ -358,7 +358,15 @@ export default {
         }
       )
     },
-    moveTask () {},
+    moveTask (zone, task) {
+      let zoneDivision = zone + ' from ' + task.zoneDivision
+      firebase.database().ref(this.ref.workpack + '/' + task.id + '/zoneDivision').set(zoneDivision).then(
+        (data) => {},
+        (error) => {
+          console.log('ERROR - tasks - moveTask -' + error.message)
+        }
+      )
+    },
     deleteTask () {},
     showLog () {},
     showTab (tab) {
