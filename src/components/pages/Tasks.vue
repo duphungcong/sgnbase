@@ -132,6 +132,13 @@
       @save="submitLinkTask($event)"
       @cancel="closeLinkTask">
     </eo-dialog>
+
+    <confirm-dialog
+      :dialog="confirmDialog"
+      title="Do you want to delete task"
+      @confirm="submitDeleteTask"
+      @cancel="closeDeleteTask"></confirm-dialog>
+
   </v-flex>
 </template>
 
@@ -143,6 +150,7 @@ import 'firebase/database'
 import ShiftDialog from '@/components/ShiftDialog'
 import TaskDialog from '@/components/TaskDialog'
 import EoDialog from '@/components/EoDialog'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 const zoneByTab = (tab) => ({
   'tab-0': 'ALL',
@@ -161,7 +169,8 @@ export default {
   components: {
     ShiftDialog,
     TaskDialog,
-    EoDialog
+    EoDialog,
+    ConfirmDialog
   },
   data () {
     return {
@@ -169,6 +178,7 @@ export default {
       shiftDialog: false,
       taskDialog: false,
       eoDialog: false,
+      confirmDialog: false,
       tabs: 'tab-0',
       search: '',
       workpackByTab: [],
@@ -231,7 +241,7 @@ export default {
       this.shiftDialog = false
       setTimeout(() => {
         this.task = {}
-      }, 300)
+      }, 200)
     },
     saveEditShift (shifts) {
       let sortedShifts = shifts.sort((a, b) => {
@@ -358,17 +368,27 @@ export default {
         }
       )
     },
-    moveTask (zone, task) {
+    moveTask (zone, task, callback) {
       let zoneDivision = zone + ' from ' + task.zoneDivision
       firebase.database().ref(this.ref.workpack + '/' + task.id + '/zoneDivision').set(zoneDivision).then(
-        (data) => {},
+        (data) => {
+          callback()
+        },
         (error) => {
           console.log('ERROR - tasks - moveTask -' + error.message)
         }
       )
     },
+    submitDeleteTask () {
+      this.moveTask('REMOVED', this.task, this.closeDeleteTask)
+    },
+    closeDeleteTask () {
+      this.confirmDialog = false
+      this.task = {}
+    },
     deleteTask (task) {
-      this.moveTask('REMOVED', task)
+      this.task = Object.assign({}, task)
+      this.confirmDialog = true
     },
     showLog () {},
     showTab (tab) {

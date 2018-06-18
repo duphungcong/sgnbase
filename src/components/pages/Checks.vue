@@ -28,8 +28,8 @@
     <confirm-dialog
       :dialog="dialog"
       :title="dialogTitle"
-      @onConfirm="onConfirm"
-      @onCancel="onCancel"></confirm-dialog>
+      @confirm="onConfirm"
+      @cancel="onCancel"></confirm-dialog>
   </v-flex>
 </template>
 
