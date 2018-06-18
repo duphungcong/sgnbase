@@ -129,7 +129,8 @@
     <eo-dialog
       :dialog="eoDialog"
       :list="eo"
-      @cancel="closeLinkTask">>
+      @save="submitLinkTask($event)"
+      @cancel="closeLinkTask">
     </eo-dialog>
   </v-flex>
 </template>
@@ -267,18 +268,18 @@ export default {
           this.updateAmsTask(task, this.saveEditTask)
         }
       } else {
-        this.saveEditTask(task)
+        this.saveEditTask(task, this.closeEditTask)
       }
     },
-    saveEditTask (task) {
-      console.log('saving edit task')
+    saveEditTask (task, callback) {
+      console.log('saving task')
       firebase.database().ref(this.ref.workpack + '/' + task.id).set(task).then(
         (data) => {
-          this.closeEditTask()
+          callback()
         },
         (error) => {
           console.log('ERROR - tasks - saveEditTask -' + error.message)
-          this.closeEditTask()
+          callback()
         }
       )
     },
@@ -293,8 +294,8 @@ export default {
       }
       firebase.database().ref(this.ref.ams + '/' + task.taskId).update(updatedData).then(
         (data) => {
-          console.log('call callback update')
-          callback(task)
+          console.log('saving task after update ams task')
+          callback(task, this.closeEditTask)
         },
         (error) => {
           console.log('ERROR - tasks - updateAmsTask -' + error.message)
@@ -318,8 +319,8 @@ export default {
 
       firebase.database().ref(this.ref.ams + '/' + amsTask.id).set(amsTask).then(
         (data) => {
-          console.log('call callback create')
-          callback(Object.assign(task, { taskId: amsTask.id }))
+          console.log('saving task after create ams task')
+          callback(Object.assign(task, { taskId: amsTask.id }), this.closeEditTask)
         },
         (error) => {
           console.log('ERROR - tasks - createAmsTask -' + error.message)
@@ -335,6 +336,27 @@ export default {
       setTimeout(() => {
         this.task = {}
       }, 100)
+    },
+    submitLinkTask (eo) {
+      this.updateEo(eo, this.saveEditTask)
+    },
+    updateEo (eo, callback) {
+      firebase.database().ref('eo/' + eo.id).update(eo).then(
+        (data) => {
+          console.log('saving task after update eo')
+          callback(Object.assign(this.task, {
+            amsMH: eo.amsMH,
+            macMH: eo.macMH,
+            men: eo.men,
+            hour: eo.hour,
+            zoneDivision: eo.zoneDivision,
+            remarks: eo.remarks
+          }), this.closeLinkTask)
+        },
+        (error) => {
+          console.log('ERROR - tasks - updateEo -' + error.message)
+        }
+      )
     },
     moveTask () {},
     deleteTask () {},

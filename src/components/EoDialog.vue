@@ -69,6 +69,9 @@ export default {
   watch: {
     dialog (value) {
       !value && (this.eo = {})
+    },
+    eo (value) {
+      value === null && (this.eo = {})
     }
   },
   methods: {
@@ -100,6 +103,9 @@ export default {
     },
     cancel () {
       this.$emit('cancel')
+    },
+    save () {
+      this.$emit('save', this.eo)
     }
   }
 }
