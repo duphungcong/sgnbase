@@ -367,7 +367,9 @@ export default {
         }
       )
     },
-    deleteTask () {},
+    deleteTask (task) {
+      this.moveTask('REMOVED', task)
+    },
     showLog () {},
     showTab (tab) {
       this.workpackByTab = Object.assign([], this.filterByTab(tab))
