@@ -28,8 +28,8 @@
     <confirm-dialog
       :dialog="dialog"
       :title="dialogTitle"
-      @confirm="onConfirm"
-      @cancel="onCancel"></confirm-dialog>
+      @confirm="submitDelete"
+      @cancel="closeDelete"></confirm-dialog>
   </v-flex>
 </template>
 
@@ -83,12 +83,12 @@ export default {
       removes['/workpacks/' + this.deletedCheckId] = null
       firebase.database().ref().update(removes).then(
         (data) => {
-          this.onCancel()
+          this.closeDelete()
           this.setLoading(false)
         },
         (error) => {
           console.log(error)
-          this.onCancel()
+          this.closeDelete()
           this.setLoading(false)
         }
       )
@@ -99,12 +99,12 @@ export default {
       console.log(this.deletedCheckId)
       this.dialog = true
     },
-    onCancel () {
+    closeDelete () {
       this.dialog = false
       this.dialogTitle = ''
       this.deletedCheckId = null
     },
-    onConfirm () {
+    submitDelete () {
       this.deleteCheck()
     },
     followCheck (checkId) {

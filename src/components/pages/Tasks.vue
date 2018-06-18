@@ -135,7 +135,7 @@
 
     <confirm-dialog
       :dialog="confirmDialog"
-      title="Do you want to delete task"
+      title="Do you want to delete this task"
       @confirm="submitDeleteTask"
       @cancel="closeDeleteTask"></confirm-dialog>
 
