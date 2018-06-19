@@ -210,7 +210,7 @@ export default {
         sortBy: 'zoneDivision'
       },
       zones: this.appConst.zoneSelection,
-      status: this.appConst.status,
+      status: this.appConst.taskStatus,
       selectedShift: [],
       selectedStatus: []
     }

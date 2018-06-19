@@ -64,12 +64,12 @@
       <template slot="expand" slot-scope="props">
         <v-card flat color="blue lighten-5" class="elevation-0">
           <v-card-actions>
-            <v-btn icon class="mx-0" @click="editNRC(props.item)">
+            <v-btn icon class="mx-0" @click="editNrc(props.item)">
               <v-tooltip bottom>
                 <v-icon color="blue" slot="activator">edit</v-icon><span>edit</span>
               </v-tooltip>
             </v-btn>
-            <v-btn icon class="mx-0" @click.native="orderSpare(props.item)">
+            <v-btn icon class="mx-0" @click.native="addSpare(props.item)">
               <v-tooltip bottom>
                 <v-icon color="blue" slot="activator">add_shopping_cart</v-icon><span>order</span>
               </v-tooltip>
@@ -91,16 +91,32 @@
         </v-card>
       </template>
     </v-data-table>
+
+    <nrc-dialog
+      :dialog="nrcDialog"
+      :nrcs="nrcs"
+      :nrc="nrc"
+      @save="saveNrc($event)"
+      @cancel="closeNrc"></nrc-dialog>
   </v-flex>
 </template>
 
 <script>
 
 import { mapState } from 'vuex'
+import firebase from 'firebase/app'
+import 'firebase/database'
+import { Nrc } from '@/models/Nrc'
+import NrcDialog from '@/components/NrcDialog'
 
 export default {
+  components: {
+    NrcDialog
+  },
   data () {
     return {
+      nrcDialog: false,
+      nrc: {},
       search: '',
       headerNRC: [
         { text: 'NRC', left: true, value: 'number' },
@@ -119,7 +135,7 @@ export default {
         descending: true
       },
       zones: this.appConst.zoneSelection,
-      status: this.appConst.status,
+      status: this.appConst.nrcStatus,
       selectedZone: [],
       selectedStatus: []
     }
@@ -133,9 +149,39 @@ export default {
     }
   },
   computed: {
-    ...mapState(['nrcs'])
+    ...mapState(['nrcs', 'checkId'])
   },
   methods: {
+    addNrc () {
+      this.nrc = new Nrc()
+      this.nrc.number = this.nrcs.length + 1
+      this.nrcDialog = true
+    },
+    editNrc (nrc) {
+      this.nrc = Object.assign({}, nrc)
+      this.nrcDialog = true
+    },
+    closeNrc () {
+      this.nrcDialog = false
+      setTimeout(() => {
+        this.nrc = {}
+      }, 200)
+    },
+    saveNrc (nrc) {
+      console.log(nrc.number)
+      if (nrc.id === '') {
+        nrc.id = firebase.database().ref('nrcs/' + this.checkId).push().key
+      }
+      firebase.database().ref('nrcs/' + this.checkId + '/' + nrc.id).update(nrc).then(
+        (data) => {
+          this.closeNrc()
+        },
+        (error) => {
+          console.log('ERROR - nrcs - saveNrc -' + error.message)
+          this.closeNrc()
+        }
+      )
+    },
     statusColor (status) {
       if (status === 'inProgress') return 'yellow darken-3 white--text'
       if (status === 'out') return 'blue-grey white--text'

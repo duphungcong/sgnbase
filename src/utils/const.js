@@ -9,10 +9,29 @@ export default {
     'CABIN',
     'CLEANING'
   ],
-  status: [
+  taskStatus: [
     'done',
     'inProgress',
     'notYet',
     'out'
+  ],
+  nrcStatus: [
+    'inProgress',
+    'done',
+    'ready',
+    'notYet',
+    'out',
+    'cancel'
+  ],
+  spareStatus: [
+    'avail',
+    'issued',
+    'notYet',
+    'cancel'
+  ],
+  priorities: [
+    'AOG',
+    'critical',
+    'normal'
   ]
 }
