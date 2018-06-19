@@ -9,6 +9,7 @@ import Consult from '@/components/pages/Consult'
 import Dashboard from '@/components/pages/Dashboard'
 import Task from '@/components/pages/Task'
 import Tasks from '@/components/pages/Tasks'
+import Nrcs from '@/components/pages/Nrcs'
 
 Vue.use(Router)
 
@@ -87,6 +88,12 @@ const router = new Router({
       path: '/tasks',
       component: Tasks,
       name: 'Tasks',
+      beforeEnter: requireFollowingCheck
+    },
+    {
+      path: '/nrcs',
+      component: Nrcs,
+      name: 'Nrcs',
       beforeEnter: requireFollowingCheck
     }
   ]

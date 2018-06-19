@@ -12,6 +12,7 @@
       </nav-menu>
 
       <v-toolbar
+        height="36"
         dense
         app
         dark

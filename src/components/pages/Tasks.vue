@@ -19,12 +19,13 @@
     </v-tabs>
 
     <v-card class="elevation-0">
-      <v-card-actions>
+      <v-card-title>
+        <v-btn depressed small dark color="primary" @click.native="addTask">Add Task</v-btn>
         <v-layout row>
-          <v-flex lg3>
+          <v-flex lg1></v-flex>
+           <v-flex lg3>
             <v-select
               multiple
-              prepend-icon="search"
               :items="check.shifts"
               v-model="selectedShift"
               clearable item-text="number"
@@ -35,15 +36,13 @@
           <v-flex lg3>
             <v-select
               multiple
-              prepend-icon="search"
               :items="status"
               v-model="selectedStatus"
-              clearable item-text="number"
-              item-value="number"
+              clearable
               label="Status"></v-select>
           </v-flex>
           <v-flex lg1></v-flex>
-          <v-flex lg4>
+          <v-flex lg5>
             <v-text-field
               prepend-icon="search"
               label="Search"
@@ -51,7 +50,7 @@
               v-model="search"></v-text-field>
           </v-flex>
         </v-layout>
-      </v-card-actions>
+      </v-card-title>
     </v-card>
 
     <v-data-table
@@ -89,7 +88,7 @@
                 </v-tooltip>
               </v-btn>
               <v-list>
-                <v-list-tile v-for="zone in zoneSelection" :key="zone" @click="moveTask(zone, props.item)">
+                <v-list-tile v-for="zone in zones" :key="zone" @click="moveTask(zone, props.item)">
                   <v-list-tile-title v-text="zone"></v-list-tile-title>
                 </v-list-tile>
               </v-list>
@@ -210,7 +209,7 @@ export default {
         rowsPerPage: 10,
         sortBy: 'zoneDivision'
       },
-      zoneSelection: this.appConst.zoneSelection,
+      zones: this.appConst.zoneSelection,
       status: this.appConst.status,
       selectedShift: [],
       selectedStatus: []
@@ -256,8 +255,8 @@ export default {
     }
   },
   methods: {
-    editShift (item) {
-      this.task = Object.assign({}, item)
+    editShift (task) {
+      this.task = Object.assign({}, task)
       this.shiftDialog = true
     },
     closeEditShift () {
@@ -280,8 +279,8 @@ export default {
         }
       )
     },
-    editTask (item) {
-      this.task = Object.assign({}, item)
+    editTask (task) {
+      this.task = Object.assign({}, task)
       this.taskDialog = true
     },
     closeEditTask () {
@@ -360,8 +359,8 @@ export default {
         }
       )
     },
-    linkTask (item) {
-      this.task = Object.assign({}, item)
+    linkTask (task) {
+      this.task = Object.assign({}, task)
       this.eoDialog = true
     },
     closeLinkTask () {

@@ -8,7 +8,6 @@ import auth from './modules/auth'
 import snackbar from './modules/snackbar'
 import navmenu from './modules/navmenu'
 import check from './modules/check'
-import confirmdialog from './modules/confirmdialog'
 
 Vue.use(Vuex)
 
@@ -19,7 +18,8 @@ const state = {
   checks: [],
   extLoad: false,
   workpack: [],
-  eo: []
+  eo: [],
+  nrcs: []
 }
 
 const mutations = {
@@ -41,6 +41,9 @@ const mutations = {
   setEo (state, payload) {
     state.eo = payload
   },
+  setNrcs (state, payload) {
+    state.nrcs = payload
+  },
   setExtLoad (state, payload) {
     state.extLoad = payload
   }
@@ -50,6 +53,7 @@ const actions = {
   followCheck (context, payload) {
     context.commit('setCheckId', payload)
     context.dispatch('getWorkpack')
+    context.dispatch('getNrcs')
     context.dispatch('getEo')
   },
   unFollowCheck (context) {
@@ -61,6 +65,7 @@ const actions = {
     if (context.state.extLoad) context.commit('setLoading', true)
     firebase.database().ref('checks').on('value',
       (data) => {
+        console.log('load checks')
         let obj = data.val()
         if (obj !== null && obj !== undefined) {
           context.commit('setChecks', Object.values(obj) || [])
@@ -84,7 +89,7 @@ const actions = {
   getWorkpack (context) {
     firebase.database().ref('workpacks/' + context.state.checkId).on('value',
       (data) => {
-        console.log('reload wp')
+        console.log('load workpack')
         let obj = data.val()
         if (obj !== null && obj !== undefined) {
           context.commit('setWorkpack', Object.values(obj) || [])
@@ -97,10 +102,26 @@ const actions = {
       }
     )
   },
+  getNrcs (context) {
+    firebase.database().ref('nrcs/' + context.state.checkId).on('value',
+      (data) => {
+        console.log('load nrc list')
+        let obj = data.val()
+        if (obj !== null && obj !== undefined) {
+          context.commit('setNrcs', Object.values(obj) || [])
+        } else {
+          context.commit('setNrcs', [])
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
   getEo (context) {
     firebase.database().ref('eo').on('value',
       (data) => {
-        console.log('reload eo')
+        console.log('load eo list')
         let obj = data.val()
         if (obj !== null && obj !== undefined) {
           context.commit('setEo', Object.values(obj) || [])
@@ -134,7 +155,6 @@ export default new Vuex.Store({
     auth,
     snackbar,
     navmenu,
-    check,
-    confirmdialog
+    check
   }
 })
