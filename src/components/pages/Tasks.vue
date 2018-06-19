@@ -23,8 +23,10 @@
         <v-layout row>
           <v-flex lg3>
             <v-select
+              multiple
               prepend-icon="search"
               :items="check.shifts"
+              v-model="selectedShift"
               clearable item-text="number"
               item-value="number"
               label="Shift"></v-select>
@@ -32,8 +34,10 @@
           <v-flex lg1></v-flex>
           <v-flex lg3>
             <v-select
+              multiple
               prepend-icon="search"
               :items="status"
+              v-model="selectedStatus"
               clearable item-text="number"
               item-value="number"
               label="Status"></v-select>
@@ -165,6 +169,16 @@ const zoneByTab = (tab) => ({
   'tab-9': 'REMOVED'
 })[tab]
 
+const compose = (...fns) => {
+  return fns.reduce((f, g) => (x) => f(g(x)))
+}
+
+const filterBy = (by) => {
+  return (arr) => {
+    return by(arr)
+  }
+}
+
 export default {
   components: {
     ShiftDialog,
@@ -200,7 +214,6 @@ export default {
       status: this.appConst.status,
       selectedShift: [],
       selectedStatus: []
-
     }
   },
   computed: {
@@ -226,10 +239,20 @@ export default {
   },
   watch: {
     tabs (value) {
-      this.showTab(value)
+      this.showTab()
     },
     workpack (value) {
-      this.showTab(this.tabs)
+      this.showTab()
+    },
+    selectedShift (value) {
+      console.log('watch selected shift')
+      value === null && (this.selectedShift = [])
+      this.showTab()
+    },
+    selectedStatus (value) {
+      console.log('watch selected status')
+      value === null && (this.selectedStatus = [])
+      this.showTab()
     }
   },
   methods: {
@@ -379,6 +402,10 @@ export default {
         }
       )
     },
+    deleteTask (task) {
+      this.task = Object.assign({}, task)
+      this.confirmDialog = true
+    },
     submitDeleteTask () {
       this.moveTask('REMOVED', this.task, this.closeDeleteTask)
     },
@@ -386,19 +413,16 @@ export default {
       this.confirmDialog = false
       this.task = {}
     },
-    deleteTask (task) {
-      this.task = Object.assign({}, task)
-      this.confirmDialog = true
-    },
     showLog () {},
-    showTab (tab) {
-      this.workpackByTab = Object.assign([], this.filterByTab(tab))
+    showTab () {
+      const filterAll = compose(this.filterByShift, this.filterByStatus, this.filterByTab)
+      this.workpackByTab = filterAll(Object.assign([], this.workpack))
     },
-    filterByTab (tab) {
-      if (zoneByTab(tab) === 'ALL') {
-        return this.workpack
-      } else if (zoneByTab(tab) === 'N/A') {
-        return this.workpack.filter(item =>
+    filterByTab (workpack) {
+      if (zoneByTab(this.tabs) === 'ALL') {
+        return workpack
+      } else if (zoneByTab(this.tabs) === 'N/A') {
+        return workpack.filter(item =>
           item.zoneDivision.indexOf('N/A') === 0 ||
           (item.zoneDivision.indexOf('100-200-800') === -1 &&
           item.zoneDivision.indexOf('300-400') === -1 &&
@@ -409,8 +433,26 @@ export default {
           item.zoneDivision.indexOf('CLEANING') === -1 &&
           item.zoneDivision.indexOf('REMOVED') === -1))
       } else {
-        return this.workpack.filter(item => item.zoneDivision.indexOf(zoneByTab(tab)) === 0)
+        return workpack.filter(item => item.zoneDivision.indexOf(zoneByTab(this.tabs)) === 0)
       }
+    },
+    filterByShift (workpack) {
+      const byShift = (arr) => {
+        return arr.filter(item =>
+          item.shifts.some(el => this.selectedShift.includes(el))
+        )
+      }
+      const getWorkpackByShift = filterBy(byShift)
+      return this.selectedShift.length === 0 ? workpack : getWorkpackByShift(workpack)
+    },
+    filterByStatus (workpack) {
+      const byStatus = (arr) => {
+        return arr.filter(item =>
+          this.selectedStatus.some(el => el === item.status)
+        )
+      }
+      const getWorkpackByStatus = filterBy(byStatus)
+      return this.selectedStatus.length === 0 ? workpack : getWorkpackByStatus(workpack)
     },
     shiftColor (shifts, shiftNumber, taskStatus) {
       if (this.currentShift === 0) {
@@ -442,7 +484,7 @@ export default {
     }
   },
   mounted () {
-    this.showTab(this.tabs)
+    this.showTab()
   }
 }
 </script>
