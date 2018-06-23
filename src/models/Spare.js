@@ -1,7 +1,8 @@
 export class Spare {
-  constructor () {
+  constructor (ref) {
     this.id = ''
-    this.ref = ''
+    this.refId = ref.id
+    this.refName = this.initRefName(ref)
     this.rqf = ''
     this.pn = ''
     this.description = ''
@@ -12,5 +13,12 @@ export class Spare {
     this.dueDate = ''
     this.estDate = ''
     this.notes = ''
+  }
+  initRefName (ref) {
+    if (ref.wpItem === null || ref.wpItem === undefined) {
+      return 'NRC ' + ref.number
+    } else {
+      return ref.wpItem
+    }
   }
 }

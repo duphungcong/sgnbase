@@ -44,15 +44,15 @@
         <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" label>{{ props.item.number }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">
-          <v-btn v-if="props.item.spareStatus !== undefined && props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpare(props.item)">
+          <v-btn v-if="props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpare(props.item)">
             <v-tooltip bottom>
               <v-icon color="blue" slot="activator" v-if="props.item.spareStatus === 'ready'">local_grocery_store</v-icon>
-              <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spares</span>
+              <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spare</span>
             </v-tooltip>
           </v-btn>
-          <v-btn v-if="props.item.tars !== undefined && props.item.tars.length !== ''" icon class="mx-0" @click.native="showTar(props.item)">
+          <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTar(props.item)">
             <v-tooltip bottom>
-              <v-icon color="grey darken-2" slot="activator">help</v-icon><span>TAR</span>
+              <v-icon color="grey darken-2" slot="activator">help</v-icon><span>tar</span>
             </v-tooltip>
           </v-btn>
         </td>
@@ -113,6 +113,7 @@ import { mapState } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import { Nrc } from '@/models/Nrc'
+import { Spare } from '@/models/Spare'
 import NrcDialog from '@/components/NrcDialog'
 import SpareDialog from '@/components/SpareDialog'
 
@@ -207,20 +208,43 @@ export default {
         }
       )
     },
-    addSpare () {
-      this.spare = {}
+    addSpare (nrc) {
+      this.spare = new Spare(nrc)
+      this.nrc = Object.assign({}, nrc)
       this.spareDialog = true
     },
     closeSpare () {
       this.spareDialog = false
       setTimeout(() => {
         this.spare = {}
+        this.nrc = {}
       }, 200)
     },
     saveSpare (spare) {
-      console.log(spare)
+      if (spare.id === '') {
+        spare.id = firebase.database().ref('spares/' + this.checkId).push().key
+      }
+      let updates = {}
+      let spareRef = 'spares/' + this.checkId + '/' + spare.id
+      let spareStatusRef = 'nrcs/' + this.checkId + '/' + this.nrc.id + '/spareStatus'
+      this.nrc.spareStatus = 'order'
+      updates[spareRef] = spare
+      updates[spareStatusRef] = 'order'
+      firebase.database().ref().update(updates).then(
+        (data) => {
+          this.closeSpare()
+        },
+        (error) => {
+          console.log('ERROR - nrcs - saveSpare -' + error.message)
+          this.closeSpare()
+        }
+      )
       this.closeSpare()
     },
+    showSpare (nrc) {},
+    makeTar (nrc) {},
+    showTar (nrc) {},
+    showLog () {},
     showNrcs () {
       const filterAll = compose(this.filterByZone, this.filterByStatus)
       this.nrcsByFilter = filterAll(Object.assign([], this.nrcs))
