@@ -36,7 +36,7 @@
 
     <v-data-table
       :headers="headerNRC"
-      :items="nrcs"
+      :items="nrcsByFilter"
       :pagination.sync="paginationNrc"
       :search="search"
       item-key="id">
@@ -44,13 +44,13 @@
         <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" label>{{ props.item.number }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">
-          <v-btn v-if="props.item.spareStatus !== undefined && props.item.spareStatus !== ''" icon class="mx-0" @click.native="showNRCSpares(props.item)">
+          <v-btn v-if="props.item.spareStatus !== undefined && props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpare(props.item)">
             <v-tooltip bottom>
               <v-icon color="blue" slot="activator" v-if="props.item.spareStatus === 'ready'">local_grocery_store</v-icon>
               <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spares</span>
             </v-tooltip>
           </v-btn>
-          <v-btn v-if="props.item.tars !== undefined && props.item.tars.length !== ''" icon class="mx-0" @click.native="showTAR(props.item)">
+          <v-btn v-if="props.item.tars !== undefined && props.item.tars.length !== ''" icon class="mx-0" @click.native="showTar(props.item)">
             <v-tooltip bottom>
               <v-icon color="grey darken-2" slot="activator">help</v-icon><span>TAR</span>
             </v-tooltip>
@@ -71,7 +71,7 @@
             </v-btn>
             <v-btn icon class="mx-0" @click.native="addSpare(props.item)">
               <v-tooltip bottom>
-                <v-icon color="blue" slot="activator">add_shopping_cart</v-icon><span>order</span>
+                <v-icon color="blue" slot="activator">shopping_cart</v-icon><span>order</span>
               </v-tooltip>
             </v-btn>
             <v-btn icon class="mx-0" @click.native="makeTar(props.item)">
@@ -98,6 +98,12 @@
       :nrc="nrc"
       @save="saveNrc($event)"
       @cancel="closeNrc"></nrc-dialog>
+
+    <spare-dialog
+      :dialog="spareDialog"
+      :spare="spare"
+      @save="saveSpare($event)"
+      @cancel="closeSpare"></spare-dialog>
   </v-flex>
 </template>
 
@@ -108,24 +114,38 @@ import firebase from 'firebase/app'
 import 'firebase/database'
 import { Nrc } from '@/models/Nrc'
 import NrcDialog from '@/components/NrcDialog'
+import SpareDialog from '@/components/SpareDialog'
+
+const compose = (...fns) => {
+  return fns.reduce((f, g) => (x) => f(g(x)))
+}
+
+const filterBy = (by) => {
+  return (arr) => {
+    return by(arr)
+  }
+}
 
 export default {
   components: {
-    NrcDialog
+    NrcDialog,
+    SpareDialog
   },
   data () {
     return {
       nrcDialog: false,
+      spareDialog: false,
       nrc: {},
+      spare: {},
       search: '',
       headerNRC: [
-        { text: 'NRC', left: true, value: 'number' },
-        { text: 'PRI', left: true, value: 'priority' },
-        { text: 'SPARE-TAR', left: true, value: '' },
-        { text: 'NOTES', left: true, value: 'notes' },
-        { text: 'CONTENT', left: true, value: 'content' },
-        { text: 'REF', left: true, value: 'ref' },
-        { text: 'ZONE', left: true, value: 'zone' }
+        { text: 'NRC', left: true, value: 'number', width: '5%' },
+        { text: 'PRI', left: true, value: 'priority', width: '5%' },
+        { text: 'SPARE-TAR', left: true, value: '', width: '5%' },
+        { text: 'NOTES', left: true, value: 'notes', width: '15%' },
+        { text: 'CONTENT', left: true, value: 'content', width: '50%' },
+        { text: 'REF', left: true, value: 'ref', width: '10%' },
+        { text: 'ZONE', left: true, value: 'zoneDivision', width: '10%' }
       ],
       paginationNrc: {
         page: 1,
@@ -137,15 +157,21 @@ export default {
       zones: this.appConst.zoneSelection,
       status: this.appConst.nrcStatus,
       selectedZone: [],
-      selectedStatus: []
+      selectedStatus: [],
+      nrcsByFilter: []
     }
   },
   watch: {
+    nrcs (value) {
+      this.showNrcs()
+    },
     selectedZone (value) {
       value === null && (this.selectedZone = [])
+      this.showNrcs()
     },
     selectedStatus (value) {
       value === null && (this.selectedStatus = [])
+      this.showNrcs()
     }
   },
   computed: {
@@ -168,7 +194,6 @@ export default {
       }, 200)
     },
     saveNrc (nrc) {
-      console.log(nrc.number)
       if (nrc.id === '') {
         nrc.id = firebase.database().ref('nrcs/' + this.checkId).push().key
       }
@@ -182,17 +207,56 @@ export default {
         }
       )
     },
+    addSpare () {
+      this.spare = {}
+      this.spareDialog = true
+    },
+    closeSpare () {
+      this.spareDialog = false
+      setTimeout(() => {
+        this.spare = {}
+      }, 200)
+    },
+    saveSpare (spare) {
+      console.log(spare)
+      this.closeSpare()
+    },
+    showNrcs () {
+      const filterAll = compose(this.filterByZone, this.filterByStatus)
+      this.nrcsByFilter = filterAll(Object.assign([], this.nrcs))
+    },
+    filterByStatus (nrcs) {
+      const byStatus = (arr) => {
+        return arr.filter(item =>
+          this.selectedStatus.some(el => el === item.status)
+        )
+      }
+      const getNrcsByStatus = filterBy(byStatus)
+      return this.selectedStatus.length === 0 ? nrcs : getNrcsByStatus(nrcs)
+    },
+    filterByZone (nrcs) {
+      const byZone = (arr) => {
+        return arr.filter(item =>
+          this.selectedZone.some(el => el === item.zoneDivision)
+        )
+      }
+      const getNrcsByZone = filterBy(byZone)
+      return this.selectedZone.length === 0 ? nrcs : getNrcsByZone(nrcs)
+    },
     statusColor (status) {
       if (status === 'inProgress') return 'yellow darken-3 white--text'
       if (status === 'out') return 'blue-grey white--text'
       if (status === 'notYet') return 'grey lighten-2'
       if (status === 'ready') return 'blue white--text'
       if (status === 'done') return 'green white--text'
-      if (status === 'cancel') return 'line-bg white--text'
+      if (status === 'cancel') return 'brown lighten-1 white--text'
     },
     priorityColor (priority) {
       if (priority === 'AOG') return 'red--text body-1'
     }
+  },
+  mounted () {
+    this.showNrcs()
   }
 }
 </script>

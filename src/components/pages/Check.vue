@@ -181,7 +181,7 @@ export default {
     ...mapMutations('check', ['setCheckId']),
     ...mapMutations(['setLoading']),
     nextStep2 () {
-      this.getAMS()
+      this.getAms()
       this.step = 2
     },
     nextStep3 () {
@@ -230,7 +230,7 @@ export default {
         this.check = Object.assign(new Check(), check)
       }
     },
-    getAMS () {
+    getAms () {
       this.setLoading(true)
       firebase.database().ref('ams' + this.check.aircraft.type).once('value').then(
         (data) => {
