@@ -41,7 +41,7 @@
       :search="search"
       item-key="id">
       <template slot="items" slot-scope="props" class="body-0">
-        <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" label>{{ props.item.number }}</v-chip></td>
+        <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" small label>{{ props.item.number }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">
           <v-btn v-if="props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpare(props.item)">

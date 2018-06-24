@@ -1,35 +1,38 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600" persistent>
+  <v-dialog v-model="dialog" max-width="800" persistent>
     <v-card>
       <v-card-title class="blue">
         <h4 class="white--text">NRC {{ model.number }}</h4>
       </v-card-title>
       <v-card-text>
         <v-layout row wrap align-baseline>
-          <v-flex xs6>
-            <v-text-field label="WO" v-model="model.wo"></v-text-field>
-          </v-flex>
-          <v-flex xs1></v-flex>
-          <v-flex xs5>
-            <v-text-field label="Reference" v-model="model.ref"></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap align-baseline>
-          <v-flex xs6>
-            <v-select label="Zone" :items="zones" v-model="model.zoneDivision"></v-select>
-          </v-flex>
-          <v-flex xs1></v-flex>
-          <v-flex xs5>
-            <v-select label="Status" :items="status" v-model="model.status"></v-select>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap align-baseline>
-          <v-flex xs12>
-            <v-select label="Priority" :items="priorities" v-model="model.priority"></v-select>
-          </v-flex>
           <v-flex xs12>
             <v-text-field label="Content" v-model="model.content" multi-line rows="1"></v-text-field>
           </v-flex>
+        </v-layout>
+        <v-layout row wrap align-baseline>
+          <v-flex xs4>
+            <v-text-field label="Reference" v-model="model.ref"></v-text-field>
+          </v-flex>
+          <v-flex xs4>
+            <v-text-field label="Zone" v-model="model.zone"></v-text-field>
+          </v-flex>
+          <v-flex xs4>
+            <v-text-field label="WO" v-model="model.wo"></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap align-baseline>
+          <v-flex xs4>
+            <v-select label="Zone Division" :items="zones" v-model="model.zoneDivision"></v-select>
+          </v-flex>
+          <v-flex xs4>
+            <v-select label="Status" :items="status" v-model="model.status"></v-select>
+          </v-flex>
+          <v-flex xs4>
+            <v-select label="Priority" :items="priorities" v-model="model.priority"></v-select>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap align-baseline>
           <v-flex xs12>
             <v-text-field label="Notes" v-model="model.notes" multi-line rows="1"></v-text-field>
           </v-flex>

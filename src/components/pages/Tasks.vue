@@ -62,7 +62,7 @@
       >
       <template slot="items" slot-scope="props">
         <td class="body-0" @click="props.expanded = !props.expanded">{{ props.item.title }}</td>
-        <td class="body-0" @click="editShift(props.item)"><v-chip v-for="shift in props.item.shifts" :key="shift" label :color="shiftColor(props.item.shifts, shift, props.item.status)">{{ shift }}</v-chip></td>
+        <td class="body-0" @click="editShift(props.item)"><v-chip v-for="shift in props.item.shifts" :key="shift" small label :color="shiftColor(props.item.shifts, shift, props.item.status)">{{ shift }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded">{{ props.item.notes }}</td>
         <td class="body-0" @click="props.expanded = !props.expanded">{{ props.item.wpItem }}</td>
         <td class="body-0" @click="props.expanded = !props.expanded">{{ props.item.type }}</td>

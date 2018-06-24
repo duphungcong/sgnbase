@@ -4,6 +4,7 @@ export class Nrc {
     this.number = ''
     this.wo = ''
     this.ref = ''
+    this.zone = ''
     this.zoneDivision = ''
     this.status = ''
     this.spareStatus = ''

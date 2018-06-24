@@ -138,16 +138,16 @@ export default {
         descending: true
       },
       headerSpare: [
-        { text: 'RQF', left: true, value: 'ref' },
-        { text: 'REF', left: true, value: 'refNumber' },
-        { text: 'DESCRIPTION', left: true, value: 'description' },
-        { text: 'P/N', left: true, value: 'pn' },
-        { text: 'QTY', left: true, value: 'quantity' },
-        { text: 'PRI', left: true, value: 'priority' },
-        { text: 'STATUS', left: true, value: 'status' },
-        { text: 'EST DATE', left: true, value: 'estDate' },
-        { text: 'NOTES', left: true, value: 'notes' },
-        { text: 'QUICK UPDATE', sortable: false, value: '' }
+        { text: 'RQF', left: true, value: 'ref', width: '10%' },
+        { text: 'REF', left: true, value: 'refNumber', width: '10%' },
+        { text: 'DESCRIPTION', left: true, value: 'description', width: '15%' },
+        { text: 'P/N', left: true, value: 'pn', width: '10%' },
+        { text: 'QTY', left: true, value: 'quantity', width: '5%' },
+        { text: 'PRI', left: true, value: 'priority', width: '10%' },
+        { text: 'STATUS', left: true, value: 'status', width: '10%' },
+        { text: 'EST DATE', left: true, value: 'estDate', width: '10%' },
+        { text: 'NOTES', left: true, value: 'notes', width: '15%' },
+        { text: 'QUICK UPDATE', sortable: false, value: '', width: '5%' }
       ],
       priorities: this.appConst.priorities,
       status: this.appConst.spareStatus,
