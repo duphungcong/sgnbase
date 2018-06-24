@@ -7,6 +7,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import appConst from './utils/const'
+import appFunction from './utils/function'
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
@@ -20,6 +21,7 @@ Vue.use(Vuetify)
 
 window.Store = store
 Vue.prototype.appConst = appConst
+Vue.prototype.appFunction = appFunction
 
 // Initialize Firebase
 const firebaseConfig = {

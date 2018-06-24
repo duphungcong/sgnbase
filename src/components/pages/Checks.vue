@@ -12,8 +12,8 @@
         <template slot="items" slot-scope="props" class="body-2">
           <td class="body-2">{{ props.item.aircraft.name }}</td>
           <td class="body-2">{{ props.item.name }}</td>
-          <td class="body-2">{{ formatDate(props.item.startDate) }}</td>
-          <td class="body-2">{{ formatDate(props.item.finishDate) }}</td>
+          <td class="body-2">{{ appFunction.formatDate(props.item.startDate) }}</td>
+          <td class="body-2">{{ appFunction.formatDate(props.item.finishDate) }}</td>
           <td class="body-2">{{ remainDay(props.item.startDate, props.item.finishDate) }}</td>
           <td class="text-xs-right">
             <v-btn flat outline small color="primary" @click.native="followCheck(props.item.id)">Follow</v-btn>
@@ -109,12 +109,6 @@ export default {
     },
     followCheck (checkId) {
       this.$store.dispatch('followCheck', checkId)
-    },
-    formatDate (dateStr) {
-      if (!dateStr) return null
-
-      const [year, month, day] = dateStr.split('-')
-      return day + '/' + month + '/' + year
     },
     remainDay (startDate, finishDate) {
       let start = new Date(startDate)

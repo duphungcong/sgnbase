@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    Hello
+    Dashboard
   </v-layout>
 </template>
 

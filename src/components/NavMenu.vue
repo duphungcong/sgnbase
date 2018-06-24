@@ -66,7 +66,8 @@ export default {
       checkMenu: [
         { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' },
         { title: 'Tasks', icon: 'dashboard', route: 'Tasks' },
-        { title: 'NRCs', icon: 'dashboard', route: 'Nrcs' }
+        { title: 'NRCs', icon: 'dashboard', route: 'Nrcs' },
+        { title: 'Spares', icon: 'dashboard', route: 'Spares' }
       ],
       noCheckMenu: [
         { title: 'Checks', icon: 'contacts', route: 'Checks' },

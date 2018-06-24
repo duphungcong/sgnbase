@@ -245,7 +245,6 @@ export default {
           this.closeSpare()
         }
       )
-      this.closeSpare()
     },
     showSpare (nrc) {},
     makeTar (nrc) {},

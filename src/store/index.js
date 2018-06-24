@@ -19,7 +19,8 @@ const state = {
   extLoad: false,
   workpack: [],
   eo: [],
-  nrcs: []
+  nrcs: [],
+  spares: []
 }
 
 const mutations = {
@@ -44,6 +45,9 @@ const mutations = {
   setNrcs (state, payload) {
     state.nrcs = payload
   },
+  setSpares (state, payload) {
+    state.spares = payload
+  },
   setExtLoad (state, payload) {
     state.extLoad = payload
   }
@@ -55,6 +59,7 @@ const actions = {
     context.dispatch('getWorkpack')
     context.dispatch('getNrcs')
     context.dispatch('getEo')
+    context.dispatch('getSpares')
   },
   unFollowCheck (context) {
     context.commit('setCheckId', null)
@@ -127,6 +132,22 @@ const actions = {
           context.commit('setEo', Object.values(obj) || [])
         } else {
           context.commit('setEo', [])
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+  getSpares (context) {
+    firebase.database().ref('spares/' + context.state.checkId).on('value',
+      (data) => {
+        console.log('load spare list')
+        let obj = data.val()
+        if (obj !== null && obj !== undefined) {
+          context.commit('setSpares', Object.values(obj) || [])
+        } else {
+          context.commit('setSpares', [])
         }
       },
       (error) => {

@@ -96,7 +96,7 @@ export default {
   data () {
     return {
       model: {},
-      status: this.appConst.nrcStatus,
+      status: this.appConst.spareStatus,
       priorities: this.appConst.priorities
     }
   },

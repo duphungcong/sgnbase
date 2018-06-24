@@ -10,6 +10,7 @@ import Dashboard from '@/components/pages/Dashboard'
 import Task from '@/components/pages/Task'
 import Tasks from '@/components/pages/Tasks'
 import Nrcs from '@/components/pages/Nrcs'
+import Spares from '@/components/pages/Spares'
 
 Vue.use(Router)
 
@@ -94,6 +95,12 @@ const router = new Router({
       path: '/nrcs',
       component: Nrcs,
       name: 'Nrcs',
+      beforeEnter: requireFollowingCheck
+    },
+    {
+      path: '/spares',
+      component: Spares,
+      name: 'Spares',
       beforeEnter: requireFollowingCheck
     }
   ]
