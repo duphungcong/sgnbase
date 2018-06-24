@@ -35,13 +35,8 @@
     </v-card>
 
     <v-data-table
-<<<<<<< HEAD
       :headers="headerNrc"
-      :items="nrcs"
-=======
-      :headers="headerNRC"
       :items="nrcsByFilter"
->>>>>>> 339d5a27a97f01d3d9e10851a24ebb918755cb31
       :pagination.sync="paginationNrc"
       :search="search"
       item-key="id">
@@ -49,21 +44,13 @@
         <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" label>{{ props.item.number }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">
-<<<<<<< HEAD
-          <v-btn v-if="props.item.spareStatus !== undefined && props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpares(props.item)">
-=======
           <v-btn v-if="props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpare(props.item)">
->>>>>>> 339d5a27a97f01d3d9e10851a24ebb918755cb31
             <v-tooltip bottom>
               <v-icon color="blue" slot="activator" v-if="props.item.spareStatus === 'ready'">local_grocery_store</v-icon>
               <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spare</span>
             </v-tooltip>
           </v-btn>
-<<<<<<< HEAD
-          <v-btn v-if="props.item.tars !== undefined && props.item.tars.length !== ''" icon class="mx-0" @click.native="showTar(props.item)">
-=======
           <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTar(props.item)">
->>>>>>> 339d5a27a97f01d3d9e10851a24ebb918755cb31
             <v-tooltip bottom>
               <v-icon color="grey darken-2" slot="activator">help</v-icon><span>tar</span>
             </v-tooltip>
@@ -162,7 +149,7 @@ export default {
         { text: 'REF', left: true, value: 'ref' },
         { text: 'ZONE', left: true, value: 'zone' }
 =======
-      headerNRC: [
+      headerNrc: [
         { text: 'NRC', left: true, value: 'number', width: '5%' },
         { text: 'PRI', left: true, value: 'priority', width: '5%' },
         { text: 'SPARE-TAR', left: true, value: '', width: '5%' },
