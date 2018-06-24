@@ -1,33 +1,39 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600" persistent>
+  <v-dialog v-model="dialog" max-width="800" persistent>
     <v-card>
       <v-card-title class="blue">
         <h4 class="white--text">{{ mode }} task</h4>
       </v-card-title>
       <v-card-text>
-        <v-layout wrap>
-          <v-flex xs12 sm12 md12>
-            <v-text-field :disabled="editMode" rows="3" label="TITLE" v-model="model.title"></v-text-field>
+        <v-layout row wrap align-baseline>
+          <v-flex xs12>
+            <v-text-field rows="3" label="TITLE" v-model="model.title"></v-text-field>
           </v-flex>
-          <v-flex xs12 sm3 md3>
+        </v-layout>
+        <v-layout row wrap align-baseline>
+          <v-flex xs3>
             <v-text-field type="number" label="AMS MH" v-model="model.amsMH"></v-text-field>
           </v-flex>
-          <v-flex xs12 sm3 md3>
+          <v-flex xs3>
             <v-text-field type="number" label="MAC MH" v-model="model.macMH"></v-text-field>
           </v-flex>
-          <v-flex xs12 sm3 md3>
+          <v-flex xs3>
             <v-text-field type="number" label="MEN" v-model="model.men"></v-text-field>
           </v-flex>
-          <v-flex xs12 sm3 md3>
+          <v-flex xs3>
             <v-text-field type="number" label="HOUR" v-model="model.hour"></v-text-field>
           </v-flex>
-          <v-flex xs12 sm12 md12>
+        </v-layout>
+        <v-layout row wrap align-baseline>
+          <v-flex xs6>
             <v-text-field multi-line rows="1" label="ZONE DIVISION" v-model="model.zoneDivision"></v-text-field>
           </v-flex>
-          <v-flex xs12 sm12 md12>
+          <v-flex xs6>
             <v-text-field multi-line rows="1" label="REMARKS" v-model="model.remarks"></v-text-field>
           </v-flex>
-          <v-flex xs12 sm12 md12>
+        </v-layout>
+        <v-layout row wrap align-baseline>
+          <v-flex xs12>
             <v-text-field multi-line rows="1" no-resize label="NOTES" v-model="model.notes"></v-text-field>
           </v-flex>
         </v-layout>

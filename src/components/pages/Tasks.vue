@@ -21,6 +21,7 @@
     <v-card class="elevation-0">
       <v-card-title>
         <v-btn depressed small dark color="primary" @click.native="addTask">Add Task</v-btn>
+        <v-spacer></v-spacer>
         <v-layout row>
           <v-flex lg1></v-flex>
            <v-flex lg3>

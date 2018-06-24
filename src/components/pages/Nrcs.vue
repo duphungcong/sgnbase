@@ -3,6 +3,7 @@
     <v-card class="elevation-0">
       <v-card-title>
         <v-btn depressed small dark color="primary" @click.native="addNrc">Add NRC</v-btn>
+        <v-spacer></v-spacer>
         <v-layout row>
           <v-flex lg1></v-flex>
            <v-flex lg3>
@@ -40,7 +41,7 @@
       :pagination.sync="paginationNrc"
       :search="search"
       item-key="id">
-      <template slot="items" slot-scope="props" class="body-0">
+      <template slot="items" slot-scope="props">
         <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" small label>{{ props.item.number }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">

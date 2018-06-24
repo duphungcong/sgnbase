@@ -2,7 +2,7 @@
   <v-flex xs12>
     <v-card class="elevation-0">
       <v-card-title>
-        <v-btn depressed small dark color="primary" @click.native="addSpare">Add Spare</v-btn>
+        <v-spacer></v-spacer>
         <v-layout row>
           <v-flex lg1></v-flex>
            <v-flex lg3>
@@ -94,22 +94,14 @@
           </v-card>
       </template>
     </v-data-table>
-
-    <spare-dialog
-      :dialog="spareDialog"
-      :spare="spare"
-      @save="saveSpare($event)"
-      @cancel="closeSpare"></spare-dialog>
   </v-flex>
 </template>
 
 <script>
 
 import { mapState } from 'vuex'
-import firebase from 'firebase/app'
-import 'firebase/database'
-import { Spare } from '@/models/Spare'
-import SpareDialog from '@/components/SpareDialog'
+// import firebase from 'firebase/app'
+// import 'firebase/database'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -122,13 +114,8 @@ const filterBy = (by) => {
 }
 
 export default {
-  components: {
-    SpareDialog
-  },
   data () {
     return {
-      spareDialog: false,
-      spare: {},
       search: '',
       paginationSpare: {
         page: 1,
@@ -178,35 +165,6 @@ export default {
     }
   },
   methods: {
-    addSpare (nrc) {
-      this.spare = new Spare(nrc)
-      this.nrc = Object.assign({}, nrc)
-      this.spareDialog = true
-    },
-    editSpare (spare) {
-      this.spare = Object.assign({}, spare)
-      this.spareDialog = true
-    },
-    closeSpare () {
-      this.spareDialog = false
-      setTimeout(() => {
-        this.spare = {}
-      }, 200)
-    },
-    saveSpare (spare) {
-      if (spare.id === '') {
-        spare.id = firebase.database().ref(this.ref.spare).push().key
-      }
-      firebase.database().ref(this.ref.spare + '/' + spare.id).update(spare).then(
-        (data) => {
-          this.closeSpare()
-        },
-        (error) => {
-          console.log('ERROR - tasks - saveSpare -' + error.message)
-          this.closeSpare()
-        }
-      )
-    },
     updateStatus (spare, status) {
       let updatedSpare = Object.assign(spare, { status: status })
       this.saveSpare(updatedSpare)
