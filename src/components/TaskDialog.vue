@@ -7,28 +7,28 @@
       <v-card-text>
         <v-layout wrap>
           <v-flex xs12 sm12 md12>
-            <v-text-field :disabled="editMode" rows="3" label="TITLE" v-model="task.title"></v-text-field>
+            <v-text-field :disabled="editMode" rows="3" label="TITLE" v-model="model.title"></v-text-field>
           </v-flex>
           <v-flex xs12 sm3 md3>
-            <v-text-field type="number" label="AMS MH" v-model="task.amsMH"></v-text-field>
+            <v-text-field type="number" label="AMS MH" v-model="model.amsMH"></v-text-field>
           </v-flex>
           <v-flex xs12 sm3 md3>
-            <v-text-field type="number" label="MAC MH" v-model="task.macMH"></v-text-field>
+            <v-text-field type="number" label="MAC MH" v-model="model.macMH"></v-text-field>
           </v-flex>
           <v-flex xs12 sm3 md3>
-            <v-text-field type="number" label="MEN" v-model="task.men"></v-text-field>
+            <v-text-field type="number" label="MEN" v-model="model.men"></v-text-field>
           </v-flex>
           <v-flex xs12 sm3 md3>
-            <v-text-field type="number" label="HOUR" v-model="task.hour"></v-text-field>
+            <v-text-field type="number" label="HOUR" v-model="model.hour"></v-text-field>
           </v-flex>
           <v-flex xs12 sm12 md12>
-            <v-text-field multi-line rows="1" label="ZONE DIVISION" v-model="task.zoneDivision"></v-text-field>
+            <v-text-field multi-line rows="1" label="ZONE DIVISION" v-model="model.zoneDivision"></v-text-field>
           </v-flex>
           <v-flex xs12 sm12 md12>
-            <v-text-field multi-line rows="1" label="REMARKS" v-model="task.remarks"></v-text-field>
+            <v-text-field multi-line rows="1" label="REMARKS" v-model="model.remarks"></v-text-field>
           </v-flex>
           <v-flex xs12 sm12 md12>
-            <v-text-field multi-line rows="1" no-resize label="NOTES" v-model="task.notes"></v-text-field>
+            <v-text-field multi-line rows="1" no-resize label="NOTES" v-model="model.notes"></v-text-field>
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -46,20 +46,20 @@ export default {
   props: {
     dialog: false,
     editMode: true,
-    current: {}
+    task: {}
   },
   data () {
     return {
       mode: 'Edit',
-      task: Object.assign({}, this.current)
+      model: Object.assign({}, this.task)
     }
   },
   watch: {
     editMode (value) {
       value ? this.mode = 'Edit' : this.mode = 'New'
     },
-    current (value) {
-      this.task = Object.assign({}, value)
+    task (value) {
+      this.model = Object.assign({}, value)
     }
   },
   methods: {
@@ -67,7 +67,7 @@ export default {
       this.$emit('cancel')
     },
     save () {
-      this.$emit('save', this.task)
+      this.$emit('save', this.model)
     }
   }
 }

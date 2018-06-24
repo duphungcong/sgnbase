@@ -115,8 +115,8 @@
 
     <shift-dialog
       :dialog="shiftDialog"
-      :list="check.shifts"
-      :current="task.shifts"
+      :checkShifts="check.shifts"
+      :taskShifts="task.shifts"
       @save="saveEditShift($event)"
       @cancel="closeEditShift">
     </shift-dialog>
@@ -124,7 +124,7 @@
     <task-dialog
       :dialog="taskDialog"
       :editMode="true"
-      :current="task"
+      :task="task"
       @save="submitEditTask($event)"
       @cancel="closeEditTask">
     </task-dialog>

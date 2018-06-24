@@ -28,10 +28,10 @@
             <v-select label="Priority" :items="priorities" v-model="model.priority"></v-select>
           </v-flex>
           <v-flex xs12>
-            <v-text-field label="Content" v-model="model.content" multi-line rows="2"></v-text-field>
+            <v-text-field label="Content" v-model="model.content" multi-line rows="1"></v-text-field>
           </v-flex>
           <v-flex xs12>
-            <v-text-field label="Notes" v-model="model.notes" multi-line rows="2"></v-text-field>
+            <v-text-field label="Notes" v-model="model.notes" multi-line rows="1"></v-text-field>
           </v-flex>
         </v-layout>
       </v-card-text>

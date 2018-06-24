@@ -6,8 +6,8 @@
       </v-card-title>
       <v-card-text>
         <v-layout row wrap>
-          <v-flex lg1 md1 sm1 xs1 v-for="shift in list" :key="shift.number">
-            <v-checkbox :label="shift.number.toString()" v-model="shifts" :value="shift.number"></v-checkbox>
+          <v-flex lg1 md1 sm1 xs1 v-for="shift in checkShifts" :key="shift.number">
+            <v-checkbox :label="shift.number.toString()" v-model="model" :value="shift.number"></v-checkbox>
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -27,13 +27,13 @@
 export default {
   props: {
     dialog: false,
-    list: {
+    checkShifts: {
       type: Array,
       default: () => {
         return []
       }
     },
-    current: {
+    taskShifts: {
       type: Array,
       default: () => {
         return []
@@ -43,14 +43,14 @@ export default {
   data () {
     return {
       inValid: false,
-      shifts: Object.assign([], this.current)
+      model: Object.assign([], this.taskShifts)
     }
   },
   watch: {
     dialog (value) {
-      value && (this.shifts = Object.assign([], this.current))
+      value && (this.model = Object.assign([], this.taskShifts))
     },
-    shifts (value) {
+    model (value) {
       value.length === 0 ? this.inValid = true : this.inValid = false
     }
   },
@@ -59,7 +59,7 @@ export default {
       this.$emit('cancel')
     },
     save () {
-      this.$emit('save', this.shifts)
+      this.$emit('save', this.model)
     }
   }
 }

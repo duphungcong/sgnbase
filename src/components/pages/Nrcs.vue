@@ -35,7 +35,7 @@
     </v-card>
 
     <v-data-table
-      :headers="headerNRC"
+      :headers="headerNrc"
       :items="nrcs"
       :pagination.sync="paginationNrc"
       :search="search"
@@ -44,13 +44,13 @@
         <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" label>{{ props.item.number }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">
-          <v-btn v-if="props.item.spareStatus !== undefined && props.item.spareStatus !== ''" icon class="mx-0" @click.native="showNRCSpares(props.item)">
+          <v-btn v-if="props.item.spareStatus !== undefined && props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpares(props.item)">
             <v-tooltip bottom>
               <v-icon color="blue" slot="activator" v-if="props.item.spareStatus === 'ready'">local_grocery_store</v-icon>
               <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spares</span>
             </v-tooltip>
           </v-btn>
-          <v-btn v-if="props.item.tars !== undefined && props.item.tars.length !== ''" icon class="mx-0" @click.native="showTAR(props.item)">
+          <v-btn v-if="props.item.tars !== undefined && props.item.tars.length !== ''" icon class="mx-0" @click.native="showTar(props.item)">
             <v-tooltip bottom>
               <v-icon color="grey darken-2" slot="activator">help</v-icon><span>TAR</span>
             </v-tooltip>
@@ -118,7 +118,7 @@ export default {
       nrcDialog: false,
       nrc: {},
       search: '',
-      headerNRC: [
+      headerNrc: [
         { text: 'NRC', left: true, value: 'number' },
         { text: 'PRI', left: true, value: 'priority' },
         { text: 'SPARE-TAR', left: true, value: '' },
@@ -130,7 +130,7 @@ export default {
       paginationNrc: {
         page: 1,
         totalItems: 0,
-        rowsPerPage: 10,
+        rowsPerPage: 25,
         sortBy: 'number',
         descending: true
       },
