@@ -244,12 +244,10 @@ export default {
       this.showTab()
     },
     selectedShift (value) {
-      console.log('watch selected shift')
       value === null && (this.selectedShift = [])
       this.showTab()
     },
     selectedStatus (value) {
-      console.log('watch selected status')
       value === null && (this.selectedStatus = [])
       this.showTab()
     }

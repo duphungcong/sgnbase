@@ -6,6 +6,8 @@ export class Nrc {
     this.ref = ''
     this.zoneDivision = ''
     this.status = ''
+    this.spareStatus = ''
+    this.tarStatus = ''
     this.priority = ''
     this.content = ''
     this.notes = ''
