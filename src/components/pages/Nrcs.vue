@@ -139,16 +139,6 @@ export default {
       nrc: {},
       spare: {},
       search: '',
-<<<<<<< HEAD
-      headerNrc: [
-        { text: 'NRC', left: true, value: 'number' },
-        { text: 'PRI', left: true, value: 'priority' },
-        { text: 'SPARE-TAR', left: true, value: '' },
-        { text: 'NOTES', left: true, value: 'notes' },
-        { text: 'CONTENT', left: true, value: 'content' },
-        { text: 'REF', left: true, value: 'ref' },
-        { text: 'ZONE', left: true, value: 'zone' }
-=======
       headerNrc: [
         { text: 'NRC', left: true, value: 'number', width: '5%' },
         { text: 'PRI', left: true, value: 'priority', width: '5%' },
@@ -157,7 +147,6 @@ export default {
         { text: 'CONTENT', left: true, value: 'content', width: '50%' },
         { text: 'REF', left: true, value: 'ref', width: '10%' },
         { text: 'ZONE', left: true, value: 'zoneDivision', width: '10%' }
->>>>>>> 339d5a27a97f01d3d9e10851a24ebb918755cb31
       ],
       paginationNrc: {
         page: 1,
