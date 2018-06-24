@@ -76,6 +76,11 @@
                   <v-icon color="blue" slot="activator">edit</v-icon><span>edit</span>
               </v-tooltip>
             </v-btn>
+            <v-btn icon class="mx-0" @click.native="addSpare(props.item)">
+              <v-tooltip bottom>
+                <v-icon color="blue" slot="activator">shopping_cart</v-icon><span>order</span>
+              </v-tooltip>
+            </v-btn>
             <v-btn icon class="mx-0" @click.native="linkTask(props.item)" v-if="isEo(props.item)">
               <v-tooltip bottom>
                   <v-icon color="blue" slot="activator">link</v-icon><span>link</span>
@@ -142,6 +147,12 @@
       @confirm="submitDeleteTask"
       @cancel="closeDeleteTask"></confirm-dialog>
 
+    <spare-dialog
+      :dialog="spareDialog"
+      :spare="spare"
+      @save="saveSpare($event)"
+      @cancel="closeSpare"></spare-dialog>
+
   </v-flex>
 </template>
 
@@ -150,10 +161,12 @@
 import { mapState } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
+import { Spare } from '@/models/Spare'
 import ShiftDialog from '@/components/ShiftDialog'
 import TaskDialog from '@/components/TaskDialog'
 import EoDialog from '@/components/EoDialog'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import SpareDialog from '@/components/SpareDialog'
 
 const zoneByTab = (tab) => ({
   'tab-0': 'ALL',
@@ -183,15 +196,18 @@ export default {
     ShiftDialog,
     TaskDialog,
     EoDialog,
-    ConfirmDialog
+    ConfirmDialog,
+    SpareDialog
   },
   data () {
     return {
       task: {},
+      spare: {},
       shiftDialog: false,
       taskDialog: false,
       eoDialog: false,
       confirmDialog: false,
+      spareDialog: false,
       tabs: 'tab-0',
       search: '',
       workpackByTab: [],
@@ -223,7 +239,8 @@ export default {
     ref () {
       return {
         ams: 'ams' + this.check.aircraft.type,
-        workpack: 'workpacks/' + this.check.id
+        workpack: 'workpacks/' + this.check.id,
+        spare: 'spares/' + this.check.id
       }
     },
     currentShift () {
@@ -354,6 +371,30 @@ export default {
         },
         (error) => {
           console.log('ERROR - tasks - createAmsTask -' + error.message)
+        }
+      )
+    },
+    addSpare (task) {
+      this.spare = new Spare(task)
+      this.spareDialog = true
+    },
+    closeSpare () {
+      this.spareDialog = false
+      setTimeout(() => {
+        this.spare = {}
+      }, 200)
+    },
+    saveSpare (spare) {
+      if (spare.id === '') {
+        spare.id = firebase.database().ref(this.ref.spare).push().key
+      }
+      firebase.database().ref(this.ref.spare + '/' + spare.id).update(spare).then(
+        (data) => {
+          this.closeSpare()
+        },
+        (error) => {
+          console.log('ERROR - tasks - saveSpare -' + error.message)
+          this.closeSpare()
         }
       )
     },

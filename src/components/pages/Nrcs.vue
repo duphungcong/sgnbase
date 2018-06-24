@@ -176,7 +176,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['nrcs', 'checkId'])
+    ...mapState(['nrcs', 'checkId']),
+    ref () {
+      return {
+        nrc: 'nrcs/' + this.checkId,
+        spare: 'spares/' + this.checkId
+      }
+    }
   },
   methods: {
     addNrc () {
@@ -196,9 +202,9 @@ export default {
     },
     saveNrc (nrc) {
       if (nrc.id === '') {
-        nrc.id = firebase.database().ref('nrcs/' + this.checkId).push().key
+        nrc.id = firebase.database().ref(this.ref.nrc).push().key
       }
-      firebase.database().ref('nrcs/' + this.checkId + '/' + nrc.id).update(nrc).then(
+      firebase.database().ref(this.ref.nrc + '/' + nrc.id).update(nrc).then(
         (data) => {
           this.closeNrc()
         },
@@ -222,11 +228,11 @@ export default {
     },
     saveSpare (spare) {
       if (spare.id === '') {
-        spare.id = firebase.database().ref('spares/' + this.checkId).push().key
+        spare.id = firebase.database().ref(this.ref.spare).push().key
       }
       let updates = {}
-      let spareRef = 'spares/' + this.checkId + '/' + spare.id
-      let spareStatusRef = 'nrcs/' + this.checkId + '/' + this.nrc.id + '/spareStatus'
+      let spareRef = this.ref.spare + '/' + spare.id
+      let spareStatusRef = this.ref.nrc + '/' + this.nrc.id + '/spareStatus'
       this.nrc.spareStatus = 'order'
       updates[spareRef] = spare
       updates[spareStatusRef] = 'order'

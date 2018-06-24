@@ -7,7 +7,7 @@
       <v-card-text>
         <v-layout row wrap align-baseline>
           <v-flex xs6>
-            <v-text-field label="W/O" v-model="model.wo"></v-text-field>
+            <v-text-field label="WO" v-model="model.wo"></v-text-field>
           </v-flex>
           <v-flex xs1></v-flex>
           <v-flex xs5>
