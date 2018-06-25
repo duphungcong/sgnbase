@@ -94,14 +94,23 @@
           </v-card>
       </template>
     </v-data-table>
+
+    <spare-dialog
+      :dialog="spareDialog"
+      :spare="spare"
+      @save="saveSpare($event)"
+      @cancel="closeSpare"></spare-dialog>
+
   </v-flex>
 </template>
 
 <script>
 
 import { mapState } from 'vuex'
-// import firebase from 'firebase/app'
-// import 'firebase/database'
+import firebase from 'firebase/app'
+import 'firebase/database'
+// import { Spare } from '@/models/Spare'
+import SpareDialog from '@/components/SpareDialog'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -114,8 +123,13 @@ const filterBy = (by) => {
 }
 
 export default {
+  components: {
+    SpareDialog
+  },
   data () {
     return {
+      spareDialog: false,
+      spare: {},
       search: '',
       paginationSpare: {
         page: 1,
@@ -125,13 +139,13 @@ export default {
         descending: true
       },
       headerSpare: [
-        { text: 'RQF', left: true, value: 'ref', width: '10%' },
-        { text: 'REF', left: true, value: 'refNumber', width: '10%' },
+        { text: 'RQF', left: true, value: 'ref', width: '12%' },
+        { text: 'REF', left: true, value: 'refNumber', width: '12%' },
         { text: 'DESCRIPTION', left: true, value: 'description', width: '15%' },
         { text: 'P/N', left: true, value: 'pn', width: '10%' },
         { text: 'QTY', left: true, value: 'quantity', width: '5%' },
-        { text: 'PRI', left: true, value: 'priority', width: '10%' },
-        { text: 'STATUS', left: true, value: 'status', width: '10%' },
+        { text: 'PRI', left: true, value: 'priority', width: '8%' },
+        { text: 'STATUS', left: true, value: 'status', width: '8%' },
         { text: 'EST DATE', left: true, value: 'estDate', width: '10%' },
         { text: 'NOTES', left: true, value: 'notes', width: '15%' },
         { text: 'QUICK UPDATE', sortable: false, value: '', width: '5%' }
@@ -165,6 +179,30 @@ export default {
     }
   },
   methods: {
+    editSpare (spare) {
+      this.spare = Object.assign({}, spare)
+      this.spareDialog = true
+    },
+    closeSpare () {
+      this.spareDialog = false
+      setTimeout(() => {
+        this.spare = {}
+      }, 200)
+    },
+    saveSpare (spare) {
+      if (spare.id === '') {
+        spare.id = firebase.database().ref(this.ref.spare).push().key
+      }
+      firebase.database().ref(this.ref.spare + '/' + spare.id).update(spare).then(
+        (data) => {
+          this.closeSpare()
+        },
+        (error) => {
+          console.log('ERROR - tasks - saveSpare -' + error.message)
+          this.closeSpare()
+        }
+      )
+    },
     updateStatus (spare, status) {
       let updatedSpare = Object.assign(spare, { status: status })
       this.saveSpare(updatedSpare)
