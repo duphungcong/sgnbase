@@ -29,6 +29,11 @@ export default {
     'notYet',
     'cancel'
   ],
+  tarStatus: [
+    'sent',
+    'replied',
+    'cancel'
+  ],
   priorities: [
     'AOG',
     'critical',

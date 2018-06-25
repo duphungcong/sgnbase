@@ -9,7 +9,7 @@ export class Nrc {
     this.status = 'notYet'
     this.spareStatus = ''
     this.tarStatus = ''
-    this.priority = ''
+    this.priority = 'critical'
     this.content = ''
     this.notes = ''
   }

@@ -105,6 +105,13 @@
       :spare="spare"
       @save="saveSpare($event)"
       @cancel="closeSpare"></spare-dialog>
+
+    <tar-dialog
+      :dialog="tarDialog"
+      :tar="tar"
+      @save="saveTar($event)"
+      @cancel="closeTar"></tar-dialog>
+
   </v-flex>
 </template>
 
@@ -115,8 +122,10 @@ import firebase from 'firebase/app'
 import 'firebase/database'
 import { Nrc } from '@/models/Nrc'
 import { Spare } from '@/models/Spare'
+import { Tar } from '@/models/Tar'
 import NrcDialog from '@/components/NrcDialog'
 import SpareDialog from '@/components/SpareDialog'
+import TarDialog from '@/components/TarDialog'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -131,14 +140,17 @@ const filterBy = (by) => {
 export default {
   components: {
     NrcDialog,
-    SpareDialog
+    SpareDialog,
+    TarDialog
   },
   data () {
     return {
       nrcDialog: false,
       spareDialog: false,
+      tarDialog: false,
       nrc: {},
       spare: {},
+      tar: {},
       search: '',
       headerNrc: [
         { text: 'NRC', left: true, value: 'number', width: '5%' },
@@ -181,7 +193,8 @@ export default {
     ref () {
       return {
         nrc: 'nrcs/' + this.checkId,
-        spare: 'spares/' + this.checkId
+        spare: 'spares/' + this.checkId,
+        tar: 'tars/' + this.checkId
       }
     }
   },
@@ -234,7 +247,6 @@ export default {
       let updates = {}
       let spareRef = this.ref.spare + '/' + spare.id
       let spareStatusRef = this.ref.nrc + '/' + this.nrc.id + '/spareStatus'
-      this.nrc.spareStatus = 'order'
       updates[spareRef] = spare
       updates[spareStatusRef] = 'order'
       firebase.database().ref().update(updates).then(
@@ -248,7 +260,37 @@ export default {
       )
     },
     showSpare (nrc) {},
-    makeTar (nrc) {},
+    makeTar (nrc) {
+      this.tar = new Tar(nrc)
+      this.nrc = Object.assign({}, nrc)
+      this.tarDialog = true
+    },
+    closeTar () {
+      this.tarDialog = false
+      setTimeout(() => {
+        this.tar = {}
+        this.nrc = {}
+      }, 200)
+    },
+    saveTar (tar) {
+      if (tar.id === '') {
+        tar.id = firebase.database().ref(this.ref.tar).push().key
+      }
+      let updates = {}
+      let tarRef = this.ref.tar + '/' + tar.id
+      let tarStatusRef = this.ref.nrc + '/' + this.nrc.id + '/tarStatus'
+      updates[tarRef] = tar
+      updates[tarStatusRef] = 'sent'
+      firebase.database().ref().update(updates).then(
+        (data) => {
+          this.closeTar()
+        },
+        (error) => {
+          console.log('ERROR - nrcs - saveTar -' + error.message)
+          this.closeTar()
+        }
+      )
+    },
     showTar (nrc) {},
     showLog () {},
     showNrcs () {

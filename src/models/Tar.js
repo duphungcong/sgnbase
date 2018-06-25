@@ -1,17 +1,14 @@
-export class Spare {
+export class Tar {
   constructor (ref) {
     this.id = ''
     this.refId = ref.id
     this.refName = this.initRefName(ref)
-    this.rqf = ''
-    this.pn = ''
-    this.description = ''
-    this.quantity = ''
-    this.status = 'notYet'
-    this.priority = 'AOG'
-    this.reqDate = ''
-    this.dueDate = ''
-    this.estDate = ''
+    this.number = ''
+    this.content = ''
+    this.sendDate = ''
+    this.replyDate = ''
+    this.status = 'sent'
+    this.zoneDivision = 'N/A'
     this.notes = ''
   }
   initRefName (ref) {
