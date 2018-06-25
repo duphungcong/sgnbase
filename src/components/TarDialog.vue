@@ -1,9 +1,11 @@
 <template>
   <v-dialog v-model="dialog" max-width="800" persistent>
     <v-card>
+
       <v-card-title class="blue">
         <h4 class="white--text">TAR</h4>
       </v-card-title>
+
       <v-card-text>
         <v-layout row wrap align-baseline>
           <v-flex xs12>
@@ -51,6 +53,7 @@
           </v-flex>
         </v-layout>
       </v-card-text>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue" small flat @click.native="cancel()">Cancel</v-btn>

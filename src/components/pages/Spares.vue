@@ -46,7 +46,7 @@
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.description }}</td>
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.pn }}</td>
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.quantity }}</td>
-        <td class="boyd-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
+        <td class="boyd-0" @click="props.expanded = !props.expanded" :class="appFunction.priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="boyd-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" small label>{{ props.item.status }}</v-chip></td>
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ appFunction.formatDate(props.item.estDate) || 'NIL' }}</td>
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.notes || 'NIL'}}</td>
@@ -139,7 +139,7 @@ export default {
         descending: true
       },
       headerSpare: [
-        { text: 'RQF', left: true, value: 'ref', width: '12%' },
+        { text: 'RQF', left: true, value: 'rqf', width: '12%' },
         { text: 'REF', left: true, value: 'refNumber', width: '12%' },
         { text: 'DESCRIPTION', left: true, value: 'description', width: '15%' },
         { text: 'P/N', left: true, value: 'pn', width: '10%' },
@@ -238,9 +238,6 @@ export default {
       if (status === 'avail') return 'blue white--text'
       if (status === 'issued') return 'green white--text'
       if (status === 'cancel') return 'brown lighten-1 white--text'
-    },
-    priorityColor (priority) {
-      if (priority === 'AOG') return 'red--text body-1'
     }
   },
   mounted () {

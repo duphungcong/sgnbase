@@ -83,10 +83,14 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setLoading']),
     ...mapMutations('navmenu', ['toggleMenu']),
     goTo (route) {
       this.$router.push({ name: route })
     }
+  },
+  mounted () {
+    this.setLoading(false)
   }
 }
 </script>

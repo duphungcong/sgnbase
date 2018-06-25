@@ -1,9 +1,11 @@
 <template>
   <v-dialog v-model="dialog" max-width="800" persistent>
     <v-card>
+
       <v-card-title class="blue">
         <h4 class="white--text">Shift Selection</h4>
       </v-card-title>
+
       <v-card-text>
         <v-layout row wrap>
           <v-flex lg1 md1 sm1 xs1 v-for="shift in checkShifts" :key="shift.number">
@@ -11,14 +13,17 @@
           </v-flex>
         </v-layout>
       </v-card-text>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue" small flat @click.native="cancel()">Cancel</v-btn>
         <v-btn color="blue" small depressed dark @click.native="save()" :disabled="inValid">Save</v-btn>
       </v-card-actions>
+
       <v-alert :value="inValid" type="error" class="elevation-0">
         A least one shift must be selected
       </v-alert>
+
     </v-card>
   </v-dialog>
 </template>

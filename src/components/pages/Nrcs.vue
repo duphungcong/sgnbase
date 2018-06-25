@@ -45,7 +45,7 @@
         <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" small label>{{ props.item.number }}</v-chip></td>
         <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">
-          <v-btn v-if="props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpare(props.item)">
+          <v-btn v-if="props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpares(props.item)">
             <v-tooltip bottom>
               <v-icon color="blue" slot="activator" v-if="props.item.spareStatus === 'ready'">local_grocery_store</v-icon>
               <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spare</span>
@@ -53,7 +53,7 @@
           </v-btn>
           <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTar(props.item)">
             <v-tooltip bottom>
-              <v-icon color="grey darken-2" slot="activator">help</v-icon><span>tar</span>
+              <v-icon color="grey darken-2" slot="activator">help_outline</v-icon><span>tar</span>
             </v-tooltip>
           </v-btn>
         </td>
@@ -112,12 +112,18 @@
       @save="saveTar($event)"
       @cancel="closeTar"></tar-dialog>
 
+    <spares-dialog
+      :dialog="sparesDialog"
+      :spares="sparesByNrc"
+      @save="saveAllSparesReady($event)"
+      @cancel="closeSpares"></spares-dialog>
+
   </v-flex>
 </template>
 
 <script>
 
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import { Nrc } from '@/models/Nrc'
@@ -126,6 +132,7 @@ import { Tar } from '@/models/Tar'
 import NrcDialog from '@/components/NrcDialog'
 import SpareDialog from '@/components/SpareDialog'
 import TarDialog from '@/components/TarDialog'
+import SparesDialog from '@/components/SparesDialog'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -141,16 +148,19 @@ export default {
   components: {
     NrcDialog,
     SpareDialog,
-    TarDialog
+    TarDialog,
+    SparesDialog
   },
   data () {
     return {
       nrcDialog: false,
       spareDialog: false,
       tarDialog: false,
+      sparesDialog: false,
       nrc: {},
       spare: {},
       tar: {},
+      sparesByNrc: [],
       search: '',
       headerNrc: [
         { text: 'NRC', left: true, value: 'number', width: '5%' },
@@ -189,7 +199,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['nrcs', 'checkId']),
+    ...mapState(['nrcs', 'checkId', 'spares']),
     ref () {
       return {
         nrc: 'nrcs/' + this.checkId,
@@ -199,6 +209,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setLoading']),
     addNrc () {
       this.nrc = new Nrc()
       this.nrc.number = this.nrcs.length + 1
@@ -259,7 +270,19 @@ export default {
         }
       )
     },
-    showSpare (nrc) {},
+    showSpares (nrc) {
+      this.sparesByNrc = this.spares.filter(item => item.refId === nrc.id)
+      this.sparesDialog = true
+    },
+    closeSpares () {
+      this.sparesDialog = false
+      setTimeout(() => {
+        this.sparesByNrc = []
+      }, 200)
+    },
+    saveAllSparesReady () {
+      this.closeSpares()
+    },
     makeTar (nrc) {
       this.tar = new Tar(nrc)
       this.nrc = Object.assign({}, nrc)

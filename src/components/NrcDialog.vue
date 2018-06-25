@@ -1,9 +1,11 @@
 <template>
   <v-dialog v-model="dialog" max-width="800" persistent>
     <v-card>
+
       <v-card-title class="blue">
         <h4 class="white--text">NRC {{ model.number }}</h4>
       </v-card-title>
+
       <v-card-text>
         <v-layout row wrap align-baseline>
           <v-flex xs12>
@@ -38,11 +40,13 @@
           </v-flex>
         </v-layout>
       </v-card-text>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue" small flat @click.native="cancel()">Cancel</v-btn>
         <v-btn color="blue" small depressed dark @click.native="save()">Save</v-btn>
       </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>
@@ -53,9 +57,7 @@ export default {
     dialog: false,
     nrcs: {
       type: Array,
-      default: () => {
-        return []
-      }
+      default: () => []
     },
     nrc: {}
   },
