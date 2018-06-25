@@ -7,7 +7,7 @@ export class Spare {
     this.pn = ''
     this.description = ''
     this.quantity = ''
-    this.status = ''
+    this.status = 'notYet'
     this.priority = ''
     this.reqDate = ''
     this.dueDate = ''
