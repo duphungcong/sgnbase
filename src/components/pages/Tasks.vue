@@ -462,7 +462,7 @@ export default {
     showLog () {},
     showTab () {
       const filterAll = compose(this.filterByShift, this.filterByStatus, this.filterByTab)
-      this.workpackByTab = filterAll(Object.assign([], this.workpack))
+      this.workpackByTab = filterAll(this.workpack.slice())
     },
     filterByTab (workpack) {
       if (zoneByTab(this.tabs) === 'ALL') {

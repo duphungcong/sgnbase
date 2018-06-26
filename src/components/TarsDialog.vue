@@ -6,7 +6,7 @@
       </v-card-title>
 
       <v-data-table
-        :items="tars"
+        :items="model"
         item-key="number"
         :headers="header"
         :pagination.sync="pagination"
@@ -71,7 +71,7 @@ export default {
   },
   data () {
     return {
-      model: {},
+      model: [],
       header: [
         { text: 'NUMBER', left: true, value: 'number', width: '5%' },
         { text: 'CONTENT', left: true, value: 'content', width: '50%' },
@@ -90,6 +90,11 @@ export default {
         descending: true
       },
       status: this.appConst.tarStatus
+    }
+  },
+  watch: {
+    tars (value) {
+      this.model = JSON.parse(JSON.stringify(value))
     }
   },
   methods: {

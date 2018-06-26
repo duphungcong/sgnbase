@@ -6,7 +6,7 @@
       </v-card-title>
 
       <v-data-table
-        :items="spares"
+        :items="model"
         item-key="pn"
         :headers="header"
         :pagination.sync="pagination"
@@ -80,7 +80,7 @@ export default {
   },
   data () {
     return {
-      model: {},
+      model: [],
       header: [
         { text: 'RQF', left: true, value: 'rqf', width: '15%' },
         { text: 'DESCRIPTION', left: true, value: 'description', width: '15%' },
@@ -100,6 +100,11 @@ export default {
         descending: true
       },
       status: this.appConst.spareStatus
+    }
+  },
+  watch: {
+    spares (value) {
+      this.model = JSON.parse(JSON.stringify(value))
     }
   },
   methods: {

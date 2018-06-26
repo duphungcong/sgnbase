@@ -129,7 +129,7 @@
 
 <script>
 
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import { Nrc } from '@/models/Nrc'
@@ -137,8 +137,8 @@ import { Spare } from '@/models/Spare'
 import { Tar } from '@/models/Tar'
 import NrcDialog from '@/components/NrcDialog'
 import SpareDialog from '@/components/SpareDialog'
-import TarDialog from '@/components/TarDialog'
 import SparesDialog from '@/components/SparesDialog'
+import TarDialog from '@/components/TarDialog'
 import TarsDialog from '@/components/TarsDialog'
 
 const compose = (...fns) => {
@@ -219,7 +219,6 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setLoading']),
     addNrc () {
       this.nrc = new Nrc()
       this.nrc.number = this.nrcs.length + 1
