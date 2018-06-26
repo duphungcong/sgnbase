@@ -20,7 +20,8 @@ const state = {
   workpack: [],
   eo: [],
   nrcs: [],
-  spares: []
+  spares: [],
+  tars: []
 }
 
 const mutations = {
@@ -48,6 +49,9 @@ const mutations = {
   setSpares (state, payload) {
     state.spares = payload
   },
+  setTars (state, payload) {
+    state.tars = payload
+  },
   setExtLoad (state, payload) {
     state.extLoad = payload
   }
@@ -60,6 +64,7 @@ const actions = {
     context.dispatch('getNrcs')
     context.dispatch('getEo')
     context.dispatch('getSpares')
+    context.dispatch('getTars')
   },
   unFollowCheck (context) {
     context.commit('setCheckId', null)
@@ -148,6 +153,22 @@ const actions = {
           context.commit('setSpares', Object.values(obj) || [])
         } else {
           context.commit('setSpares', [])
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+  getTars (context) {
+    firebase.database().ref('tars/' + context.state.checkId).on('value',
+      (data) => {
+        console.log('load tar list')
+        let obj = data.val()
+        if (obj !== null && obj !== undefined) {
+          context.commit('setTars', Object.values(obj) || [])
+        } else {
+          context.commit('setTars', [])
         }
       },
       (error) => {

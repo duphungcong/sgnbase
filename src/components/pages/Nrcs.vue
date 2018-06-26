@@ -51,7 +51,7 @@
               <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spare</span>
             </v-tooltip>
           </v-btn>
-          <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTar(props.item)">
+          <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTars(props.item)">
             <v-tooltip bottom>
               <v-icon color="grey darken-2" slot="activator">help_outline</v-icon><span>tar</span>
             </v-tooltip>
@@ -118,6 +118,12 @@
       @save="saveAllSparesReady($event)"
       @cancel="closeSpares"></spares-dialog>
 
+    <tars-dialog
+      :dialog="tarsDialog"
+      :tars="tarsByNrc"
+      @save="saveAllTarsReady($event)"
+      @cancel="closeTars"></tars-dialog>
+
   </v-flex>
 </template>
 
@@ -133,6 +139,7 @@ import NrcDialog from '@/components/NrcDialog'
 import SpareDialog from '@/components/SpareDialog'
 import TarDialog from '@/components/TarDialog'
 import SparesDialog from '@/components/SparesDialog'
+import TarsDialog from '@/components/TarsDialog'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -149,7 +156,8 @@ export default {
     NrcDialog,
     SpareDialog,
     TarDialog,
-    SparesDialog
+    SparesDialog,
+    TarsDialog
   },
   data () {
     return {
@@ -157,15 +165,17 @@ export default {
       spareDialog: false,
       tarDialog: false,
       sparesDialog: false,
+      tarsDialog: false,
       nrc: {},
       spare: {},
       tar: {},
       sparesByNrc: [],
+      tarsByNrc: [],
       search: '',
       headerNrc: [
         { text: 'NRC', left: true, value: 'number', width: '5%' },
         { text: 'PRI', left: true, value: 'priority', width: '5%' },
-        { text: 'SPARE-TAR', left: true, value: '', width: '5%' },
+        { text: 'SPARE - TAR', left: true, value: '', width: '5%' },
         { text: 'NOTES', left: true, value: 'notes', width: '15%' },
         { text: 'CONTENT', left: true, value: 'content', width: '50%' },
         { text: 'REF', left: true, value: 'ref', width: '10%' },
@@ -199,7 +209,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['nrcs', 'checkId', 'spares']),
+    ...mapState(['nrcs', 'checkId', 'spares', 'tars']),
     ref () {
       return {
         nrc: 'nrcs/' + this.checkId,
@@ -314,7 +324,19 @@ export default {
         }
       )
     },
-    showTar (nrc) {},
+    showTars (nrc) {
+      this.tarsByNrc = this.tars.filter(item => item.refId === nrc.id)
+      this.tarsDialog = true
+    },
+    closeTars () {
+      this.tarsDialog = false
+      setTimeout(() => {
+        this.tarsByNrc = []
+      }, 200)
+    },
+    saveAllTarsReady () {
+      this.closeTars()
+    },
     showLog () {},
     showNrcs () {
       const filterAll = compose(this.filterByZone, this.filterByStatus)
