@@ -123,7 +123,7 @@
     <tars-dialog
       :dialog="tarsDialog"
       :tars="tarsByNrc"
-      :allReady="nrc.tarStatus === 'ready'"
+      :allReplied="nrc.tarStatus === 'replied'"
       @save="saveTars($event)"
       @cancel="closeTars"></tars-dialog>
 
