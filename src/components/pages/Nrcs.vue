@@ -48,12 +48,12 @@
           <v-btn v-if="props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpares(props.item)">
             <v-tooltip bottom>
               <v-icon color="blue" slot="activator" v-if="props.item.spareStatus === 'ready'">local_grocery_store</v-icon>
-              <v-icon color="grey darken-2" slot="activator" v-else>local_grocery_store</v-icon><span>spare</span>
+              <v-icon color="grey" slot="activator" v-else>local_grocery_store</v-icon><span>spare</span>
             </v-tooltip>
           </v-btn>
           <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTars(props.item)">
             <v-tooltip bottom>
-              <v-icon color="grey darken-2" slot="activator">help_outline</v-icon><span>tar</span>
+              <v-icon color="grey" slot="activator">help_outline</v-icon><span>tar</span>
             </v-tooltip>
           </v-btn>
         </td>
@@ -115,13 +115,14 @@
     <spares-dialog
       :dialog="sparesDialog"
       :spares="sparesByNrc"
-      @save="saveAllSparesReady($event)"
+      :allReady="nrc.spareStatus === 'ready'"
+      @save="saveSpares($event)"
       @cancel="closeSpares"></spares-dialog>
 
     <tars-dialog
       :dialog="tarsDialog"
       :tars="tarsByNrc"
-      @save="saveAllTarsReady($event)"
+      @save="saveTars($event)"
       @cancel="closeTars"></tars-dialog>
 
   </v-flex>
@@ -281,16 +282,30 @@ export default {
     },
     showSpares (nrc) {
       this.sparesByNrc = this.spares.filter(item => item.refId === nrc.id)
+      this.nrc = Object.assign({}, nrc)
       this.sparesDialog = true
     },
     closeSpares () {
       this.sparesDialog = false
       setTimeout(() => {
         this.sparesByNrc = []
+        this.nrc = {}
       }, 200)
     },
-    saveAllSparesReady () {
-      this.closeSpares()
+    saveSpares (data) {
+      let updates = {}
+      data.spares.forEach(item => {
+        updates[this.ref.spare + '/' + item.id] = item
+      })
+      updates[this.ref.nrc + '/' + this.nrc.id + '/spareStatus'] = data.ready ? 'ready' : this.nrc.spareStatus
+      firebase.database().ref().update(updates).then(
+        (data) => {
+          this.closeSpares()
+        }, (error) => {
+          console.log('ERROR - nrcs - saveSpares -' + error.message)
+          this.closeSpares()
+        }
+      )
     },
     makeTar (nrc) {
       this.tar = new Tar(nrc)
@@ -333,7 +348,7 @@ export default {
         this.tarsByNrc = []
       }, 200)
     },
-    saveAllTarsReady () {
+    saveTars () {
       this.closeTars()
     },
     showLog () {},

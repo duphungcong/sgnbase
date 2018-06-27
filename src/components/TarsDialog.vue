@@ -2,8 +2,12 @@
   <v-dialog v-model="dialog" max-width="1100" persistent>
     <v-card>
       <v-card-title class="blue">
-        <h4 class="white--text">List Tars</h4>
+        <h4 class="white--text">List TARs</h4>
       </v-card-title>
+
+      <v-card-text>
+        <v-switch label="All Ready" v-model="ready" color="primary"></v-switch>
+      </v-card-text>
 
       <v-data-table
         :items="model"
@@ -72,6 +76,7 @@ export default {
   data () {
     return {
       model: [],
+      ready: false,
       header: [
         { text: 'NUMBER', left: true, value: 'number', width: '5%' },
         { text: 'CONTENT', left: true, value: 'content', width: '50%' },

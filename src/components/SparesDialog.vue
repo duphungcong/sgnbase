@@ -5,6 +5,10 @@
         <h4 class="white--text">List Spares</h4>
       </v-card-title>
 
+      <v-card-text>
+        <v-switch label="All Ready" v-model="ready" color="primary"></v-switch>
+      </v-card-text>
+
       <v-data-table
         :items="model"
         item-key="pn"
@@ -76,11 +80,13 @@ export default {
     spares: {
       type: Array,
       default: () => []
-    }
+    },
+    allReady: false
   },
   data () {
     return {
       model: [],
+      ready: this.allReady,
       header: [
         { text: 'RQF', left: true, value: 'rqf', width: '15%' },
         { text: 'DESCRIPTION', left: true, value: 'description', width: '15%' },
@@ -112,7 +118,7 @@ export default {
       this.$emit('cancel')
     },
     save () {
-      this.$emit('save', this.model)
+      this.$emit('save', { spares: this.model, ready: this.ready })
     }
   }
 }
