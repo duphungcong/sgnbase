@@ -214,7 +214,7 @@ export default {
       workpackByTab: [],
       headerTask: [
         { text: 'TITLE', left: true, value: 'title', width: '20%' },
-        { text: 'STATUS', left: true, value: 'status', width: '15%' },
+        { text: 'SHIFTS', left: true, value: 'status', width: '15%' },
         { text: 'NOTES', left: true, value: 'notes', width: '15%' },
         { text: 'WP ITEM', left: true, value: 'wpItem', width: '15%' },
         { text: 'TYPE', left: true, value: 'type', width: '5%' },
