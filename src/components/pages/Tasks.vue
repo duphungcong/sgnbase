@@ -158,7 +158,7 @@
 
 <script>
 
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import { Task } from '@/models/Task'
@@ -271,17 +271,20 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setLoading']),
     editShift (task) {
       this.task = Object.assign({}, task)
       this.shiftDialog = true
     },
     closeEditShift () {
       this.shiftDialog = false
+      this.setLoading(false)
       setTimeout(() => {
         this.task = {}
       }, 200)
     },
     saveEditShift (shifts) {
+      this.setLoading(true)
       let sortedShifts = shifts.sort((a, b) => {
         return a - b
       })
@@ -305,6 +308,7 @@ export default {
     },
     closeTask () {
       this.taskDialog = false
+      this.setLoading(false)
       setTimeout(() => {
         this.task = {}
       }, 100)
@@ -313,6 +317,7 @@ export default {
       return task.name.indexOf('VN ') === 0
     },
     submitTask (task) {
+      this.setLoading(true)
       if (!this.isEo(task)) {
         if (task.taskId === '') {
           this.createAmsTask(task, this.saveTask)
@@ -324,7 +329,6 @@ export default {
       }
     },
     saveTask (task, callback) {
-      // console.log('saving task')
       if (task.id === '') {
         task.id = firebase.database().ref(this.ref.workpack).push().key
       }

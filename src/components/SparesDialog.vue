@@ -86,7 +86,7 @@ export default {
   data () {
     return {
       model: [],
-      ready: this.allReady,
+      ready: false,
       header: [
         { text: 'RQF', left: true, value: 'rqf', width: '15%' },
         { text: 'DESCRIPTION', left: true, value: 'description', width: '15%' },
@@ -111,6 +111,7 @@ export default {
   watch: {
     spares (value) {
       this.model = JSON.parse(JSON.stringify(value))
+      this.ready = this.allReady
     }
   },
   methods: {

@@ -130,7 +130,7 @@
 
 <script>
 
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import { Nrc } from '@/models/Nrc'
@@ -220,6 +220,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setLoading']),
     addNrc () {
       this.nrc = new Nrc()
       this.nrc.number = this.nrcs.length + 1
@@ -231,11 +232,13 @@ export default {
     },
     closeNrc () {
       this.nrcDialog = false
+      this.setLoading(false)
       setTimeout(() => {
         this.nrc = {}
       }, 200)
     },
     saveNrc (nrc) {
+      this.setLoading(true)
       if (nrc.id === '') {
         nrc.id = firebase.database().ref(this.ref.nrc).push().key
       }
@@ -256,12 +259,14 @@ export default {
     },
     closeSpare () {
       this.spareDialog = false
+      this.setLoading(false)
       setTimeout(() => {
         this.spare = {}
         this.nrc = {}
       }, 200)
     },
     saveSpare (spare) {
+      this.setLoading(true)
       if (spare.id === '') {
         spare.id = firebase.database().ref(this.ref.spare).push().key
       }
@@ -287,17 +292,19 @@ export default {
     },
     closeSpares () {
       this.sparesDialog = false
+      this.setLoading(false)
       setTimeout(() => {
         this.sparesByNrc = []
         this.nrc = {}
       }, 200)
     },
     saveSpares (data) {
+      this.setLoading(true)
       let updates = {}
       data.spares.forEach(item => {
         updates[this.ref.spare + '/' + item.id] = item
       })
-      updates[this.ref.nrc + '/' + this.nrc.id + '/spareStatus'] = data.ready ? 'ready' : this.nrc.spareStatus
+      updates[this.ref.nrc + '/' + this.nrc.id + '/spareStatus'] = data.ready ? 'ready' : 'order'
       firebase.database().ref().update(updates).then(
         (data) => {
           this.closeSpares()
@@ -314,12 +321,14 @@ export default {
     },
     closeTar () {
       this.tarDialog = false
+      this.setLoading(false)
       setTimeout(() => {
         this.tar = {}
         this.nrc = {}
       }, 200)
     },
     saveTar (tar) {
+      this.setLoading(true)
       if (tar.id === '') {
         tar.id = firebase.database().ref(this.ref.tar).push().key
       }
