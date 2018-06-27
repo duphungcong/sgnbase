@@ -53,7 +53,7 @@
           </v-btn>
           <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTars(props.item)">
             <v-tooltip bottom>
-              <v-icon color="blue" slot="activator" v-if="props.item.tarStatus === 'ready'">help_outline</v-icon>
+              <v-icon color="blue" slot="activator" v-if="props.item.tarStatus === 'replied'">help_outline</v-icon>
               <v-icon color="grey" slot="activator" v-else>help_outline</v-icon><span>tar</span>
             </v-tooltip>
           </v-btn>
@@ -368,7 +368,7 @@ export default {
       data.tars.forEach(item => {
         updates[this.ref.tar + '/' + item.id] = item
       })
-      updates[this.ref.nrc + '/' + this.nrc.id + '/tarStatus'] = data.ready ? 'ready' : 'sent'
+      updates[this.ref.nrc + '/' + this.nrc.id + '/tarStatus'] = data.replied ? 'replied' : 'sent'
       firebase.database().ref().update(updates).then(
         (data) => {
           this.closeTars()

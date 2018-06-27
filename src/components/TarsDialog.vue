@@ -6,7 +6,7 @@
       </v-card-title>
 
       <v-card-text>
-        <v-switch label="All Ready" v-model="ready" color="primary"></v-switch>
+        <v-switch label="All Replied" v-model="replied" color="primary"></v-switch>
       </v-card-text>
 
       <v-data-table
@@ -72,12 +72,12 @@ export default {
       type: Array,
       default: () => []
     },
-    allReady: false
+    allReplied: false
   },
   data () {
     return {
       model: [],
-      ready: false,
+      replied: false,
       header: [
         { text: 'NUMBER', left: true, value: 'number', width: '5%' },
         { text: 'CONTENT', left: true, value: 'content', width: '50%' },
@@ -101,7 +101,7 @@ export default {
   watch: {
     tars (value) {
       this.model = JSON.parse(JSON.stringify(value))
-      this.ready = this.allReady
+      this.replied = this.allReplied
     }
   },
   methods: {
@@ -109,7 +109,7 @@ export default {
       this.$emit('cancel')
     },
     save () {
-      this.$emit('save', { tars: this.model, ready: this.ready })
+      this.$emit('save', { tars: this.model, replied: this.replied })
     }
   }
 }
