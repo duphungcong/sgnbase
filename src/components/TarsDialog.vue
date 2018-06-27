@@ -71,7 +71,8 @@ export default {
     tars: {
       type: Array,
       default: () => []
-    }
+    },
+    allReady: false
   },
   data () {
     return {
@@ -100,6 +101,7 @@ export default {
   watch: {
     tars (value) {
       this.model = JSON.parse(JSON.stringify(value))
+      this.ready = this.allReady
     }
   },
   methods: {
@@ -107,7 +109,7 @@ export default {
       this.$emit('cancel')
     },
     save () {
-      this.$emit('save', this.model)
+      this.$emit('save', { tars: this.model, ready: this.ready })
     }
   }
 }

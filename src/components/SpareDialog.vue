@@ -31,14 +31,6 @@
         </v-layout>
         <v-layout row wrap align-baseline>
           <v-flex xs6>
-            <v-text-field label="Ref" v-model="model.refName" disabled></v-text-field>
-          </v-flex>
-           <v-flex xs6>
-            <v-text-field label="Notes" v-model="model.notes"></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap align-baseline>
-          <v-flex xs6>
             <v-menu
               lazy
               :close-on-content-click="true"
@@ -77,6 +69,14 @@
               ></v-text-field>
               <v-date-picker v-model="model.dueDate"></v-date-picker>
             </v-menu>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap align-baseline>
+          <v-flex xs6>
+            <v-text-field label="Notes" v-model="model.notes"></v-text-field>
+          </v-flex>
+          <v-flex xs6>
+            <v-text-field label="Ref" v-model="model.refName" disabled></v-text-field>
           </v-flex>
         </v-layout>
       </v-card-text>

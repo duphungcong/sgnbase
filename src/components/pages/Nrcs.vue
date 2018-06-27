@@ -53,7 +53,8 @@
           </v-btn>
           <v-btn v-if="props.item.tarStatus !== ''" icon class="mx-0" @click.native="showTars(props.item)">
             <v-tooltip bottom>
-              <v-icon color="grey" slot="activator">help_outline</v-icon><span>tar</span>
+              <v-icon color="blue" slot="activator" v-if="props.item.tarStatus === 'ready'">help_outline</v-icon>
+              <v-icon color="grey" slot="activator" v-else>help_outline</v-icon><span>tar</span>
             </v-tooltip>
           </v-btn>
         </td>
@@ -122,6 +123,7 @@
     <tars-dialog
       :dialog="tarsDialog"
       :tars="tarsByNrc"
+      :allReady="nrc.tarStatus === 'ready'"
       @save="saveTars($event)"
       @cancel="closeTars"></tars-dialog>
 
@@ -349,16 +351,32 @@ export default {
     },
     showTars (nrc) {
       this.tarsByNrc = this.tars.filter(item => item.refId === nrc.id)
+      this.nrc = Object.assign({}, nrc)
       this.tarsDialog = true
     },
     closeTars () {
       this.tarsDialog = false
+      this.setLoading(false)
       setTimeout(() => {
         this.tarsByNrc = []
+        this.nrc = {}
       }, 200)
     },
-    saveTars () {
-      this.closeTars()
+    saveTars (data) {
+      this.setLoading(true)
+      let updates = {}
+      data.tars.forEach(item => {
+        updates[this.ref.tar + '/' + item.id] = item
+      })
+      updates[this.ref.nrc + '/' + this.nrc.id + '/tarStatus'] = data.ready ? 'ready' : 'sent'
+      firebase.database().ref().update(updates).then(
+        (data) => {
+          this.closeTars()
+        }, (error) => {
+          console.log('ERROR - nrcs - saveTars -' + error.message)
+          this.closeTars()
+        }
+      )
     },
     showLog () {},
     showNrcs () {
