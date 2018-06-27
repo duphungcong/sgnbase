@@ -106,10 +106,9 @@
 
 <script>
 
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
-// import { Spare } from '@/models/Spare'
 import SpareDialog from '@/components/SpareDialog'
 
 const compose = (...fns) => {
@@ -179,6 +178,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setLoading']),
     editSpare (spare) {
       this.spare = Object.assign({}, spare)
       this.spareDialog = true
@@ -190,16 +190,19 @@ export default {
       }, 200)
     },
     saveSpare (spare) {
+      this.setLoading(true)
       if (spare.id === '') {
         spare.id = firebase.database().ref(this.ref.spare).push().key
       }
       firebase.database().ref(this.ref.spare + '/' + spare.id).update(spare).then(
         (data) => {
           this.closeSpare()
+          this.setLoading(false)
         },
         (error) => {
           console.log('ERROR - tasks - saveSpare -' + error.message)
           this.closeSpare()
+          this.setLoading(false)
         }
       )
     },
