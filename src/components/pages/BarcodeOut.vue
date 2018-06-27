@@ -111,18 +111,18 @@ export default {
     onBarcodeScanned (barcode) {
       // console.log(barcode)
       this.duplicateAlert = false
-      let scanItem = this.formatBarcode(this.barcode)
-      // console.log(scanItem)
+      let scan = this.formatBarcode(this.barcode)
+      // console.log(scan)
       let found = this.scanList.find((item) => {
-        return item.number === scanItem.number
+        return item.number === scan.number
       })
       if (found === undefined) {
         let now = Date.now(7)
         let time = new Date(now)
         // console.log(time)
         this.scanList.push({
-          number: scanItem.number,
-          isNRC: scanItem.isNRC,
+          number: scan.number,
+          isNRC: scan.isNRC,
           person: this.person,
           time: time.toLocaleString(),
           notes: '',
