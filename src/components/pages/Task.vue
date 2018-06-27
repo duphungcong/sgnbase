@@ -1,6 +1,6 @@
 <template>
   <v-flex xs12>
-    <p>Hello</p>
+    <p>Task</p>
   </v-flex>
 </template>
 

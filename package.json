@@ -17,6 +17,7 @@
     "babel-polyfill": "^6.26.0",
     "firebase": "^5.0.3",
     "vue": "^2.5.2",
+    "vue-barcode-scanner": "^0.6.0",
     "vue-router": "^3.0.1",
     "vuetify": "^1.0.18",
     "vuex": "^3.0.1",

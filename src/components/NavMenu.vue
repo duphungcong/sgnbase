@@ -65,9 +65,11 @@ export default {
       mini: false,
       checkMenu: [
         { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' },
-        { title: 'Tasks', icon: 'dashboard', route: 'Tasks' },
-        { title: 'NRCs', icon: 'dashboard', route: 'Nrcs' },
-        { title: 'Spares', icon: 'dashboard', route: 'Spares' }
+        { title: 'Tasks', icon: 'file_copy', route: 'Tasks' },
+        { title: 'NRCs', icon: 'filter_none', route: 'Nrcs' },
+        { title: 'Spares', icon: 'shopping_cart', route: 'Spares' },
+        { title: 'Barcode In', icon: 'arrow_back', route: 'BarcodeIn' },
+        { title: 'Barcode Out', icon: 'arrow_forward', route: 'BarcodeOut' }
       ],
       noCheckMenu: [
         { title: 'Checks', icon: 'contacts', route: 'Checks' },

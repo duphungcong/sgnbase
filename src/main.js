@@ -14,6 +14,7 @@ import 'firebase/auth'
 
 import 'vuetify/dist/vuetify.min.css'
 import 'babel-polyfill'
+import VueBarcodeScanner from 'vue-barcode-scanner'
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -22,6 +23,14 @@ Vue.use(Vuetify)
 window.Store = store
 Vue.prototype.appConst = appConst
 Vue.prototype.appFunction = appFunction
+
+const barcodeOptions = {
+  // sound: true, // default is false
+  // soundSrc: '/static/sound.wav', // default is blank
+  sensitivity: 300, // default is 100
+  requiredAttr: true // default is false
+}
+Vue.use(VueBarcodeScanner, barcodeOptions)
 
 // Initialize Firebase
 const firebaseConfig = {

@@ -11,6 +11,8 @@ import Task from '@/components/pages/Task'
 import Tasks from '@/components/pages/Tasks'
 import Nrcs from '@/components/pages/Nrcs'
 import Spares from '@/components/pages/Spares'
+import BarcodeIn from '@/components/pages/BarcodeIn'
+import BarcodeOut from '@/components/pages/BarcodeOut'
 
 Vue.use(Router)
 
@@ -101,6 +103,18 @@ const router = new Router({
       path: '/spares',
       component: Spares,
       name: 'Spares',
+      beforeEnter: requireFollowingCheck
+    },
+    {
+      path: '/in',
+      component: BarcodeIn,
+      name: 'BarcodeIn',
+      beforeEnter: requireFollowingCheck
+    },
+    {
+      path: '/out',
+      component: BarcodeOut,
+      name: 'BarcodeOut',
       beforeEnter: requireFollowingCheck
     }
   ]
