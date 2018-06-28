@@ -81,7 +81,7 @@
                 <v-icon color="blue" slot="activator">help_outline</v-icon><span>tar</span>
               </v-tooltip>
             </v-btn>
-            <v-btn icon class="mx-0" @click.native="showLog(props.item)">
+            <v-btn icon class="mx-0" @click.native="showLogs(props.item)">
               <v-tooltip bottom>
                 <v-icon color="blue" slot="activator">assignment</v-icon><span>log</span>
               </v-tooltip>
@@ -127,6 +127,11 @@
       @save="saveTars($event)"
       @cancel="closeTars"></tars-dialog>
 
+    <logs-dialog
+      :dialog="logsDialog"
+      :logs="logs"
+      @cancel="closeLogs"></logs-dialog>
+
   </v-flex>
 </template>
 
@@ -143,6 +148,7 @@ import SpareDialog from '@/components/SpareDialog'
 import SparesDialog from '@/components/SparesDialog'
 import TarDialog from '@/components/TarDialog'
 import TarsDialog from '@/components/TarsDialog'
+import LogsDialog from '@/components/LogsDialog'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -160,7 +166,8 @@ export default {
     SpareDialog,
     TarDialog,
     SparesDialog,
-    TarsDialog
+    TarsDialog,
+    LogsDialog
   },
   data () {
     return {
@@ -169,9 +176,11 @@ export default {
       tarDialog: false,
       sparesDialog: false,
       tarsDialog: false,
+      logsDialog: false,
       nrc: {},
       spare: {},
       tar: {},
+      logs: [],
       sparesByNrc: [],
       tarsByNrc: [],
       search: '',
@@ -217,7 +226,8 @@ export default {
       return {
         nrc: 'nrcs/' + this.checkId,
         spare: 'spares/' + this.checkId,
-        tar: 'tars/' + this.checkId
+        tar: 'tars/' + this.checkId,
+        log: 'nrcLogs/' + this.checkId
       }
     }
   },
@@ -378,7 +388,32 @@ export default {
         }
       )
     },
-    showLog () {},
+    showLogs (nrc) {
+      this.nrc = Object.assign({}, nrc)
+
+      this.setLoading(true)
+
+      firebase.database().ref(this.ref.log).orderByChild('refId').equalTo(this.nrc.id).once('value').then(
+        (data) => {
+          let obj = data.val()
+          if (obj !== null && obj !== undefined) {
+            this.logs = Object.values(obj) || []
+          }
+          this.setLoading(false)
+          this.logsDialog = true
+        }, (error) => {
+          console.log('ERROR - tasks - showLogs -' + error.message)
+          this.setLoading(false)
+        }
+      )
+    },
+    closeLogs () {
+      this.logsDialog = false
+      setTimeout(() => {
+        this.logs = []
+        this.nrc = {}
+      }, 200)
+    },
     showNrcs () {
       const filterAll = compose(this.filterByZone, this.filterByStatus)
       this.nrcsByFilter = filterAll(Object.assign([], this.nrcs))

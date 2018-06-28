@@ -104,7 +104,7 @@
                   <v-icon color="red" slot="activator">delete</v-icon><span>delete</span>
               </v-tooltip>
             </v-btn>
-            <v-btn icon class="mx-0" @click.native="showLog(props.item)">
+            <v-btn icon class="mx-0" @click.native="showLogs(props.item)">
               <v-tooltip bottom>
                   <v-icon color="blue" slot="activator">assignment</v-icon><span>log</span>
               </v-tooltip>
@@ -153,6 +153,11 @@
       @save="saveSpare($event)"
       @cancel="closeSpare"></spare-dialog>
 
+    <logs-dialog
+      :dialog="logsDialog"
+      :logs="logs"
+      @cancel="closeLogs"></logs-dialog>
+
   </v-flex>
 </template>
 
@@ -168,6 +173,7 @@ import TaskDialog from '@/components/TaskDialog'
 import EoDialog from '@/components/EoDialog'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import SpareDialog from '@/components/SpareDialog'
+import LogsDialog from '@/components/LogsDialog'
 
 const zoneByTab = (tab) => ({
   'tab-0': 'ALL',
@@ -198,17 +204,20 @@ export default {
     TaskDialog,
     EoDialog,
     ConfirmDialog,
-    SpareDialog
+    SpareDialog,
+    LogsDialog
   },
   data () {
     return {
       task: {},
       spare: {},
+      logs: [],
       shiftDialog: false,
       taskDialog: false,
       eoDialog: false,
       confirmDialog: false,
       spareDialog: false,
+      logsDialog: false,
       tabs: 'tab-0',
       search: '',
       workpackByTab: [],
@@ -241,7 +250,8 @@ export default {
       return {
         ams: 'ams' + this.check.aircraft.type,
         workpack: 'workpacks/' + this.check.id,
-        spare: 'spares/' + this.check.id
+        spare: 'spares/' + this.check.id,
+        log: 'taskLogs/' + this.check.id
       }
     },
     currentShift () {
@@ -463,7 +473,32 @@ export default {
       this.confirmDialog = false
       this.task = {}
     },
-    showLog () {},
+    showLogs (task) {
+      this.task = Object.assign({}, task)
+
+      this.setLoading(true)
+
+      firebase.database().ref(this.ref.log).orderByChild('refId').equalTo(this.task.id).once('value').then(
+        (data) => {
+          let obj = data.val()
+          if (obj !== null && obj !== undefined) {
+            this.logs = Object.values(obj) || []
+          }
+          this.setLoading(false)
+          this.logsDialog = true
+        }, (error) => {
+          console.log('ERROR - tasks - showLogs -' + error.message)
+          this.setLoading(false)
+        }
+      )
+    },
+    closeLogs () {
+      this.logsDialog = false
+      setTimeout(() => {
+        this.logs = []
+        this.task = {}
+      }, 200)
+    },
     showTab () {
       const filterAll = compose(this.filterByShift, this.filterByStatus, this.filterByTab)
       this.workpackByTab = filterAll(this.workpack.slice())

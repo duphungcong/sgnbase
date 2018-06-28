@@ -29,8 +29,8 @@
 
       <v-layout>
         <v-flex xs12>
-          <v-alert type="success" v-model="duplicateAlert">
-            This task is already scanned!
+          <v-alert :type="alertType" v-model="alert">
+            {{ alertMessage }}
           </v-alert>
         </v-flex>
       </v-layout>
@@ -61,35 +61,33 @@
 
       <v-layout>
         <v-flex xs12>
-          <ul>
-            <li v-for="item in scanList" :key="item.number">
-              <v-card class="elevation-0 pl-2">
-                <v-layout row wrap align-center>
-                  <v-flex xs2>
-                    <span v-if="item.isNRC">NRC </span><span>{{ item.number }}</span>
-                  </v-flex>
-                  <v-flex xs2>
-                    <span>{{ item.person }}</span>
-                  </v-flex>
-                  <v-flex xs2>
-                    <span>{{ item.time }}</span>
-                  </v-flex>
-                  <v-flex xs5>
-                    <v-text-field label="Remarks" v-model="item.notes"></v-text-field>
-                  </v-flex>
-                  <v-flex xs1 pl-3>
-                    <v-btn icon @click.native="remove(item)">
-                      <v-tooltip bottom>
-                        <v-icon color="red" slot="activator">delete</v-icon><span>delete</span>
-                      </v-tooltip>
-                    </v-btn>
-                    <v-icon color="green" v-if="item.updateSuccess">check</v-icon>
-                    <v-icon color="red" v-if="item.updateFail">close</v-icon>
-                  </v-flex>
-                </v-layout>
-              </v-card>
-            </li>
-          </ul>
+          <v-list>
+            <v-list-tile v-for="item in scanList" :key="item.number">
+              <v-layout row wrap align-center>
+                <v-flex xs2>
+                  <span v-if="item.isNRC">NRC </span><span>{{ item.number }}</span>
+                </v-flex>
+                <v-flex xs2>
+                  <span>{{ item.person }}</span>
+                </v-flex>
+                <v-flex xs2>
+                  <span>{{ item.time }}</span>
+                </v-flex>
+                <v-flex xs5>
+                  <v-text-field label="Remarks" v-model="item.notes"></v-text-field>
+                </v-flex>
+                <v-flex xs1 pl-3>
+                  <v-btn icon @click.native="remove(item)">
+                    <v-tooltip bottom>
+                      <v-icon color="red" slot="activator">delete</v-icon><span>delete</span>
+                    </v-tooltip>
+                  </v-btn>
+                  <v-icon color="green" v-if="item.updateSuccess">check</v-icon>
+                  <v-icon color="red" v-if="item.updateFail">close</v-icon>
+                </v-flex>
+              </v-layout>
+            </v-list-tile>
+          </v-list>
         </v-flex>
       </v-layout>
 
@@ -98,29 +96,38 @@
 </template>
 
 <script>
+
+import { mapState, mapMutations } from 'vuex'
+import firebase from 'firebase/app'
+import 'firebase/database'
+
 export default {
   data () {
     return {
       person: '',
       barcode: '',
       scanList: [],
-      duplicateAlert: false
+      alert: false,
+      alertType: 'info',
+      alertMessage: ''
     }
   },
+  computed: {
+    ...mapState(['workpack', 'nrcs', 'checkId'])
+  },
   methods: {
+    ...mapMutations(['setLoading']),
     onBarcodeScanned (barcode) {
-      // console.log(barcode)
-      this.duplicateAlert = false
       let scan = this.formatBarcode(this.barcode)
-      // console.log(scan)
-      let found = this.scanList.find((item) => {
+      let itemInWorkpack = scan.isNRC ? this.nrcs.find(item => item.number === scan.number) : this.workpack.find(item => item.wpItem === scan.number)
+      let duplicate = this.scanList.find((item) => {
         return item.number === scan.number
       })
-      if (found === undefined) {
+      if (itemInWorkpack !== undefined && duplicate === undefined) {
         let now = Date.now(7)
         let time = new Date(now)
-        // console.log(time)
         this.scanList.push({
+          itemInWorkpack: Object.assign({}, itemInWorkpack),
           number: scan.number,
           isNRC: scan.isNRC,
           person: this.person,
@@ -129,10 +136,15 @@ export default {
           updateSuccess: false,
           updateFail: false
         })
-      } else {
-        this.duplicateAlert = true
+      } else if (itemInWorkpack === undefined) {
+        this.openAlert('error', 'Item not exist')
         setTimeout(() => {
-          this.duplicateAlert = false
+          this.closeAlert()
+        }, 2000)
+      } else {
+        this.openAlert('info', 'Item already scanned')
+        setTimeout(() => {
+          this.closeAlert()
         }, 2000)
       }
       this.barcode = ''
@@ -151,7 +163,49 @@ export default {
         }
       }
     },
-    update () {},
+    update () {
+      this.setLoading(true)
+      let logRef, itemRef
+      this.scanList.forEach(item => {
+        if (item.isNRC) {
+          logRef = 'nrcLogs/' + this.checkId
+          itemRef = 'nrcs/' + this.checkId
+        } else {
+          logRef = 'taskLogs/' + this.checkId
+          itemRef = 'workpacks/' + this.checkId
+        }
+
+        if (item.notes !== null && item.notes !== undefined) {
+          item.itemInWorkpack.notes = item.notes
+        }
+
+        item.itemInWorkpack.status = 'out'
+
+        let log = {
+          id: firebase.database().ref(logRef).push().key,
+          refId: item.itemInWorkpack.id,
+          status: 'out',
+          person: item.person,
+          time: item.time,
+          action: 'take out',
+          notes: item.itemInWorkpack.notes
+        }
+
+        let updates = {}
+        updates[logRef + '/' + log.id] = log
+        updates[itemRef + '/' + item.itemInWorkpack.id] = item.itemInWorkpack
+
+        firebase.database().ref().update(updates).then(
+          (data) => {
+            item.updateSuccess = true
+          }, (error) => {
+            console.log('ERROR - barcodeout - update -' + error.message)
+            item.updateFail = true
+          }
+        )
+      })
+      this.setLoading(false)
+    },
     clear () {
       this.scanList.forEach(item => {
         item.updateSuccess = false
@@ -166,13 +220,20 @@ export default {
     },
     focusToScan () {
       this.$refs.scanBox.focus()
+    },
+    openAlert (type, message) {
+      this.alert = true
+      this.alertType = type
+      this.alertMessage = message
+    },
+    closeAlert () {
+      this.alert = false
+      this.alertType = 'info'
+      this.alertMessage = ''
     }
   },
   created () {
     this.$barcodeScanner.init(this.onBarcodeScanned)
-  },
-  mounted () {
-    this.checkId = this.$store.getters.following
   },
   destroyed () {
     this.$barcodeScanner.destroy()
