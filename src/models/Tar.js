@@ -4,7 +4,8 @@ export class Tar {
     this.refId = ref.id
     this.refName = this.initRefName(ref)
     this.number = ''
-    this.content = ''
+    this.question = ''
+    this.answer = ''
     this.sendDate = ''
     this.replyDate = ''
     this.status = 'sent'

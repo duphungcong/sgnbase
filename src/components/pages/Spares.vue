@@ -47,7 +47,7 @@
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.pn }}</td>
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.quantity }}</td>
         <td class="boyd-0" @click="props.expanded = !props.expanded" :class="appFunction.priorityColor(props.item.priority)">{{ props.item.priority }}</td>
-        <td class="boyd-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" small label>{{ props.item.status }}</v-chip></td>
+        <td class="boyd-0" @click="props.expanded = !props.expanded"><v-chip :class="appFunction.spareStatusColor(props.item.status)" small label>{{ props.item.status }}</v-chip></td>
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ appFunction.formatDate(props.item.estDate) || 'NIL' }}</td>
         <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.notes || 'NIL'}}</td>
         <td class="body-0">

@@ -17,11 +17,9 @@
         hide-actions>
         <template slot="items" slot-scope="props">
           <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.number }}</td>
-          <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.content }}</td>
-          <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.sendDate }}</td>
-          <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.replyDate || 'NIL' }}</td>
+          <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.question }}</td>
+          <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.answer }}</td>
           <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.status }}</td>
-          <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.zone }}</td>
           <td class="boyd-0" @click="props.expanded = !props.expanded">{{ props.item.notes || 'NIL' }}</td>
           <td class="body-0">
             <v-menu bottom right>
@@ -52,6 +50,15 @@
             </v-menu>
           </td>
         </template>
+        <template slot="expand" slot-scope="props">
+            <v-card flat color="blue lighten-5" class="elevation-0">
+              <v-card-text>
+                <p>Send Date: <strong>{{ appFunction.formatDate(props.item.sendDate) }}</strong></p>
+                <p>Reply Date: <strong>{{ appFunction.formatDate(props.item.replyDate) || 'NIL' }}</strong></p>
+                <p>Zone: <strong>{{ props.item.zoneDivision }}</strong></p>
+              </v-card-text>
+            </v-card>
+        </template>
       </v-data-table>
 
       <v-card-actions>
@@ -79,13 +86,11 @@ export default {
       model: [],
       replied: false,
       header: [
-        { text: 'NUMBER', left: true, value: 'number', width: '5%' },
-        { text: 'CONTENT', left: true, value: 'content', width: '50%' },
-        { text: 'SEND DATE', left: true, value: 'sendDate', width: '10%' },
-        { text: 'REPLY DATE', left: true, value: 'replyDate', width: '10%' },
+        { text: 'NUMBER', left: true, value: 'number', width: '10%' },
+        { text: 'QUESTION', left: true, value: 'question', width: '30%' },
+        { text: 'ANSWER', left: true, value: 'answer', width: '30%' },
         { text: 'STATUS', left: true, value: 'status', width: '5%' },
-        { text: 'ZONE', left: true, value: 'estDate', width: '5%' },
-        { text: 'NOTES', left: true, value: 'notes', width: '15%' },
+        { text: 'NOTES', left: true, value: 'notes', width: '20%' },
         { text: 'QUICK UPDATE', sortable: false, value: '', width: '5%' }
       ],
       pagination: {

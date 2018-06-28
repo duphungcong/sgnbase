@@ -14,7 +14,12 @@
         </v-layout>
         <v-layout row wrap align-baseline>
           <v-flex xs12>
-            <v-text-field label="Content" v-model="model.content" multi-line rows="1"></v-text-field>
+            <v-text-field label="Question" v-model="model.question" multi-line rows="1"></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap align-baseline>
+          <v-flex xs12>
+            <v-text-field label="Answer" v-model="model.answer" multi-line rows="1"></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row wrap align-baseline>
