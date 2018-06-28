@@ -33,7 +33,11 @@
 
       <v-list-tile v-for="item in itemMenu" :key="item.title" @click="goTo(item.route)">
         <v-list-tile-action>
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-tooltip right v-if="mini">
+            <v-icon slot="activator">{{ item.icon }}</v-icon>
+            <span>{{ item.tooltip }}</span>
+          </v-tooltip>
+          <v-icon v-else>{{ item.icon }}</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>{{ item.title }}</v-list-tile-title>
@@ -64,12 +68,12 @@ export default {
     return {
       mini: false,
       checkMenu: [
-        { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' },
-        { title: 'Tasks', icon: 'file_copy', route: 'Tasks' },
-        { title: 'NRCs', icon: 'filter_none', route: 'Nrcs' },
-        { title: 'Spares', icon: 'shopping_cart', route: 'Spares' },
-        { title: 'Barcode In', icon: 'arrow_back', route: 'BarcodeIn' },
-        { title: 'Barcode Out', icon: 'arrow_forward', route: 'BarcodeOut' }
+        { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard', tooltip: 'Dashboard' },
+        { title: 'Tasks', icon: 'filter_none', route: 'Tasks', tooltip: 'Tasks' },
+        { title: 'NRCs', icon: 'file_copy', route: 'Nrcs', tooltip: 'NRCs' },
+        { title: 'Spares', icon: 'shopping_cart', route: 'Spares', tooltip: 'Spares' },
+        { title: 'Barcode In', icon: 'arrow_back', route: 'BarcodeIn', tooltip: 'Barcode In' },
+        { title: 'Barcode Out', icon: 'arrow_forward', route: 'BarcodeOut', tooltip: 'Barcode Out' }
       ],
       noCheckMenu: [
         { title: 'Checks', icon: 'contacts', route: 'Checks' },
