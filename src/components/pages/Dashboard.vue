@@ -1,46 +1,81 @@
 <template>
   <v-card class="elevation-0 pl-2">
-    <v-flex xs12>
-      <p><strong>TASK OVERVIEW</strong></p>
-      <p>Total: <strong>{{ taskStatus.total }}</strong></p>
-      <p>Done: <strong>{{ taskStatus.done }}</strong></p>
-      <p>InProgress: <strong>{{ taskStatus.inProgress }}</strong></p>
-      <p>Take Out: <strong>{{ taskStatus.out }}</strong></p>
-      <p>Not Yet: <strong>{{ taskStatus.notYet }}</strong></p>
-    </v-flex>
-    <v-flex xs12>
-      <p><strong>NRC OVERVIEW</strong></p>
-      <p>Total: <strong>{{ nrcStatus.total }}</strong></p>
-      <p>Done: <strong>{{ nrcStatus.done }}</strong></p>
-      <p>Ready: <strong>{{ nrcStatus.ready }}</strong></p>
-      <p>Cancel: <strong>{{ nrcStatus.cancel }}</strong></p>
-      <p>InProgress: <strong>{{ nrcStatus.inProgress }}</strong></p>
-      <p>Take Out: <strong>{{ taskStatus.out }}</strong></p>
-      <p>Not Yet: <strong>{{ taskStatus.notYet }}</strong></p>
-    </v-flex>
+    <v-layout row wrap>
+      <v-flex xs6>
+        <doughnut ref="taskChart" :data="taskDataChart"></doughnut>
+      </v-flex>
+      <v-flex xs6>
+        <p><strong>TASK OVERVIEW</strong></p>
+        <p>Total: <strong>{{ taskData.total }}</strong></p>
+        <p>Done: <strong>{{ taskData.done }}</strong></p>
+        <p>InProgress: <strong>{{ taskData.inProgress }}</strong></p>
+        <p>Take Out: <strong>{{ taskData.out }}</strong></p>
+        <p>Not Yet: <strong>{{ taskData.notYet }}</strong></p>
+      </v-flex>
+    </v-layout>
+
+    <v-layout row wrap>
+      <v-layout row wrap>
+        <v-flex xs6>
+          <doughnut ref="nrcChart" :data="nrcDataChart"></doughnut>
+        </v-flex>
+        <v-flex xs6>
+          <p><strong>NRC OVERVIEW</strong></p>
+          <p>Total: <strong>{{ nrcData.total }}</strong></p>
+          <p>Done: <strong>{{ nrcData.done }}</strong></p>
+          <p>Ready: <strong>{{ nrcData.ready }}</strong></p>
+          <p>InProgress: <strong>{{ nrcData.inProgress }}</strong></p>
+          <p>Take Out: <strong>{{ nrcData.out }}</strong></p>
+          <p>Not Yet: <strong>{{ nrcData.notYet }}</strong></p>
+          <p>Cancel: <strong>{{ nrcData.cancel }}</strong></p>
+        </v-flex>
+      </v-layout>
+    </v-layout>
   </v-card>
 </template>
 
 <script>
 
 import { mapState } from 'vuex'
+import Doughnut from '@/components/charts/Doughnut'
 
 export default {
+  components: {
+    Doughnut
+  },
   data () {
     return {
-      taskStatus: {
-        total: 0,
-        done: 0,
-        inProgress: 0,
-        notYet: 0,
-        out: 0
+      taskData: {},
+      nrcData: {},
+      taskDataChart: {
+        labels: ['Done', 'InProgress', 'NotYet', 'Takeout'],
+        datasets: [
+          {
+            backgroundColor: [
+              '#4CAF50',
+              '#F9A825',
+              '#BDBDBD',
+              '#607D8B'
+            ],
+            data: []
+          }
+        ]
       },
-      nrcStatus: {
-        total: 0,
-        done: 0,
-        inProgress: 0,
-        notYet: 0,
-        out: 0
+      nrcDataChart: {
+        labels: ['Done', 'Ready', 'InProgress', 'NotYet', 'Takeout', 'Cancel'],
+        datasets: [
+          {
+            backgroundColor: [
+              '#4CAF50',
+              '#2196F3',
+              '#F9A825',
+              '#BDBDBD',
+              '#607D8B',
+              '#8D6E63'
+            ],
+            data: []
+          }
+        ]
       }
     }
   },
@@ -58,28 +93,29 @@ export default {
   methods: {
     taskCount () {
       this.taskReset()
-      this.taskStatus.total = this.workpack.length
       this.workpack.forEach(item => {
         if (item.status === 'notYet') {
-          this.taskStatus.notYet++
+          this.taskData.notYet++
           return
         }
         if (item.status === 'inProgress') {
-          this.taskStatus.inProgress++
+          this.taskData.inProgress++
           return
         }
         if (item.status === 'done') {
-          this.taskStatus.done++
+          this.taskData.done++
           return
         }
         if (item.status === 'out') {
-          this.taskStatus.out++
+          this.taskData.out++
         }
       })
+      this.taskDataChart.datasets[0].data = Object.values(this.taskData)
+      this.$refs.taskChart.update()
+      this.taskData.total = this.workpack.length
     },
     taskReset () {
-      this.taskStatus = {
-        total: 0,
+      this.taskData = {
         done: 0,
         inProgress: 0,
         notYet: 0,
@@ -88,32 +124,43 @@ export default {
     },
     nrcCount () {
       this.nrcReset()
-      this.nrcStatus.total = this.nrcs.length
       this.nrcs.forEach(item => {
         if (item.status === 'notYet') {
-          this.nrcStatus.notYet++
+          this.nrcData.notYet++
           return
         }
         if (item.status === 'inProgress') {
-          this.nrcStatus.inProgress++
+          this.nrcData.inProgress++
           return
         }
         if (item.status === 'done') {
-          this.nrcStatus.done++
+          this.nrcData.done++
+          return
+        }
+        if (item.status === 'ready') {
+          this.nrcData.ready++
           return
         }
         if (item.status === 'out') {
-          this.nrcStatus.out++
+          this.nrcData.out++
+          return
+        }
+        if (item.status === 'cancel') {
+          this.nrcData.cancel++
         }
       })
+      this.nrcDataChart.datasets[0].data = Object.values(this.nrcData)
+      this.$refs.nrcChart.update()
+      this.nrcData.total = this.nrcs.length
     },
     nrcReset () {
-      this.nrcStatus = {
-        total: 0,
+      this.nrcData = {
         done: 0,
+        ready: 0,
         inProgress: 0,
         notYet: 0,
-        out: 0
+        out: 0,
+        cancel: 0
       }
     }
   },

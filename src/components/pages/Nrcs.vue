@@ -42,8 +42,8 @@
       :search="search"
       item-key="id">
       <template slot="items" slot-scope="props">
-        <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="statusColor(props.item.status)" small label>{{ props.item.number }}</v-chip></td>
-        <td class="body-0" @click="props.expanded = !props.expanded" :class="priorityColor(props.item.priority)">{{ props.item.priority }}</td>
+        <td class="body-0" @click="props.expanded = !props.expanded"><v-chip :class="appFunction.nrcStatusColor(props.item.status)" small label>{{ props.item.number }}</v-chip></td>
+        <td class="body-0" @click="props.expanded = !props.expanded" :class="appFunction.priorityColor(props.item.priority)">{{ props.item.priority }}</td>
         <td class="body-0">
           <v-btn v-if="props.item.spareStatus !== ''" icon class="mx-0" @click.native="showSpares(props.item)">
             <v-tooltip bottom>
@@ -435,17 +435,6 @@ export default {
       }
       const getNrcsByZone = filterBy(byZone)
       return this.selectedZone.length === 0 ? nrcs : getNrcsByZone(nrcs)
-    },
-    statusColor (status) {
-      if (status === 'inProgress') return 'yellow darken-3 white--text'
-      if (status === 'out') return 'blue-grey white--text'
-      if (status === 'notYet') return 'grey lighten-2'
-      if (status === 'ready') return 'blue white--text'
-      if (status === 'done') return 'green white--text'
-      if (status === 'cancel') return 'brown lighten-1 white--text'
-    },
-    priorityColor (priority) {
-      if (priority === 'AOG') return 'red--text body-1'
     }
   },
   mounted () {

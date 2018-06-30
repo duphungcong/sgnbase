@@ -13,5 +13,13 @@ export default {
     if (status === 'avail') return 'blue white--text'
     if (status === 'issued') return 'green white--text'
     if (status === 'cancel') return 'brown lighten-1 white--text'
+  },
+  nrcStatusColor (status) {
+    if (status === 'inProgress') return 'yellow darken-3 white--text'
+    if (status === 'out') return 'blue-grey white--text'
+    if (status === 'notYet') return 'grey lighten-2'
+    if (status === 'ready') return 'blue white--text'
+    if (status === 'done') return 'green white--text'
+    if (status === 'cancel') return 'brown lighten-1 white--text'
   }
 }
