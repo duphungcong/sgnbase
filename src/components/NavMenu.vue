@@ -10,10 +10,10 @@
         <v-list class="pa-0">
           <v-list-tile avatar>
             <v-list-tile-avatar>
-              <img src="https://randomuser.me/api/portraits/men/85.jpg" >
+              <img src="https://randomuser.me/api/portraits/lego/7.jpg" >
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>John Leider</v-list-tile-title>
+              <v-list-tile-title>{{ user.email }}</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-menu bottom left offset-y origin="bottom right" transition="v-slide-y-transition">
@@ -22,7 +22,7 @@
                 </v-btn>
                 <v-list>
                   <v-list-tile v-if="isFollowingCheck" @click="stopFollowingCheck">Stop following check</v-list-tile>
-                  <v-list-tile @click="goTo('Acount')">Account</v-list-tile>
+                  <!-- <v-list-tile @click="goTo('Acount')">Account</v-list-tile> -->
                   <v-list-tile @click="onLogOut">Logout</v-list-tile>
                 </v-list>
               </v-menu>
@@ -63,6 +63,9 @@
 </template>
 
 <script>
+
+import { mapState } from 'vuex'
+
 export default {
   data () {
     return {
@@ -76,9 +79,9 @@ export default {
         { title: 'Barcode Out', icon: 'arrow_forward', route: 'BarcodeOut', tooltip: 'Barcode Out' }
       ],
       noCheckMenu: [
-        { title: 'Checks', icon: 'contacts', route: 'Checks' },
-        { title: 'AMS Task', icon: 'contacts', route: 'Task' },
-        { title: 'Mac Consult', icon: 'contacts', route: 'Consult' }
+        { title: 'Checks', icon: 'contacts', route: 'Checks', tooltip: 'Checks' },
+        // { title: 'AMS Task', icon: 'contacts', route: 'Task', tooltip: 'Task' },
+        { title: 'Mac Consult', icon: 'contacts', route: 'Consult', tooltip: 'Consult' }
       ]
     }
   },
@@ -89,6 +92,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('auth', ['user']),
     navMenu () {
       return this.$store.getters['navmenu/navmenu']
     },
