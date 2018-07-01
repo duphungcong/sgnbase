@@ -34,13 +34,28 @@
       <v-layout pl-2>
         <v-flex xs12>
           <v-layout row wrap align-center>
+            <v-flex xs12>
+              Select Status
+              <v-radio-group v-model="statusAll" column>
+                <v-radio label="Done" value="done" color="green"></v-radio>
+                <v-radio label="InProgress" value="inProgress" color="yellow darken-3"></v-radio>
+                <v-radio label="NotYet" value="notYet" color="red"></v-radio>
+              </v-radio-group>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+
+      <v-layout pl-2>
+        <v-flex xs12>
+          <v-layout row wrap align-center>
             <v-flex xs2>
               <span><strong>Item ({{ scanList.length }})</strong></span>
             </v-flex>
-            <v-flex xs2>
+            <!-- <v-flex xs2>
               <span><strong>Status</strong></span>
-            </v-flex>
-            <v-flex xs2>
+            </v-flex> -->
+            <v-flex xs4>
               <span><strong>Time</strong></span>
             </v-flex>
             <v-flex xs5>
@@ -63,14 +78,14 @@
                 <v-flex xs2>
                   <span v-if="item.isNRC">NRC </span><span>{{ item.number }}</span>
                 </v-flex>
-                <v-flex xs2>
+                <!-- <v-flex xs2>
                   <v-radio-group v-model="item.status" row>
                     <v-radio value="done" color="green"></v-radio>
                     <v-radio value="inProgress" color="yellow darken-3"></v-radio>
                     <v-radio value="notYet" color="red"></v-radio>
                   </v-radio-group>
-                </v-flex>
-                <v-flex xs2>
+                </v-flex> -->
+                <v-flex xs4>
                   <span>{{ item.time }}</span>
                 </v-flex>
                 <v-flex xs5>
@@ -106,6 +121,7 @@ export default {
       person: 'duphungcong@gmail.com',
       barcode: '',
       scanList: [],
+      statusAll: 'done',
       alert: false,
       alertType: 'info',
       alertMessage: ''
@@ -113,6 +129,13 @@ export default {
   },
   computed: {
     ...mapState(['workpack', 'nrcs', 'checkId'])
+  },
+  watch: {
+    statusAll (value) {
+      if (value !== null && value !== undefined) {
+        this.scanList.forEach(item => item.status = value)
+      }
+    }
   },
   methods: {
     ...mapMutations(['setLoading']),
@@ -131,7 +154,7 @@ export default {
           isNRC: scan.isNRC,
           person: this.person,
           time: time.toLocaleString(),
-          status: scan.status,
+          status: this.statusAll,
           notes: '',
           updateSuccess: false,
           updateFail: false
@@ -179,15 +202,15 @@ export default {
           item.itemInWorkpack.notes = item.notes
         }
 
-        item.itemInWorkpack.status = 'out'
+        item.itemInWorkpack.status = item.status
 
         let log = {
           id: firebase.database().ref(logRef).push().key,
           refId: item.itemInWorkpack.id,
-          status: 'out',
+          status: item.status,
           person: item.person,
           time: item.time,
-          action: 'take out',
+          action: 'receive',
           notes: item.itemInWorkpack.notes
         }
 
