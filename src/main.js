@@ -8,6 +8,7 @@ import router from './router'
 import store from './store'
 import appConst from './utils/const'
 import appFunction from './utils/function'
+import appConfig from './utils/config'
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
@@ -23,24 +24,13 @@ Vue.use(Vuetify)
 window.Store = store
 Vue.prototype.appConst = appConst
 Vue.prototype.appFunction = appFunction
+Vue.prototype.appConfig = appConfig
 
-const barcodeOptions = {
-  // sound: true, // default is false
-  // soundSrc: '/static/sound.wav', // default is blank
-  sensitivity: 300, // default is 100
-  requiredAttr: true // default is false
-}
+const barcodeOptions = appConfig.barcodeOptions
 Vue.use(VueBarcodeScanner, barcodeOptions)
 
 // Initialize Firebase
-const firebaseConfig = {
-  apiKey: 'AIzaSyDmJzjL0ZudgtdkXTmREnogsrqfO4iixt4',
-  authDomain: 'sgnbase.firebaseapp.com',
-  databaseURL: 'https://sgnbase.firebaseio.com',
-  projectId: 'sgnbase',
-  storageBucket: 'sgnbase.appspot.com',
-  messagingSenderId: '100760308598'
-}
+const firebaseConfig = appConfig.firebaseConfig
 
 /* eslint-disable no-new */
 new Vue({
