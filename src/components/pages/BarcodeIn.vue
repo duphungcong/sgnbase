@@ -133,7 +133,9 @@ export default {
   watch: {
     statusAll (value) {
       if (value !== null && value !== undefined) {
-        this.scanList.forEach(item => item.status = value)
+        this.scanList.forEach(item => {
+          item.status = value
+        })
       }
     }
   },
