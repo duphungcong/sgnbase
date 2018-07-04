@@ -14,6 +14,11 @@ export default {
     if (status === 'issued') return 'green white--text'
     if (status === 'cancel') return 'brown lighten-1 white--text'
   },
+  tarStatusColor (status) {
+    if (status === 'sent') return 'grey lighten-2'
+    if (status === 'replied') return 'green white--text'
+    if (status === 'cancel') return 'brown lighten-1 white--text'
+  },
   nrcStatusColor (status) {
     if (status === 'inProgress') return 'yellow darken-3 white--text'
     if (status === 'out') return 'blue-grey white--text'

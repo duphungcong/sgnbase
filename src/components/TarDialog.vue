@@ -35,7 +35,7 @@
             >
               <v-text-field
                 slot="activator"
-                label="Req date"
+                label="Send date"
                 v-model="model.sendDate"
                 prepend-icon="event"
                 readonly

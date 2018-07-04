@@ -11,6 +11,7 @@ import Task from '@/components/pages/Task'
 import Tasks from '@/components/pages/Tasks'
 import Nrcs from '@/components/pages/Nrcs'
 import Spares from '@/components/pages/Spares'
+import Tars from '@/components/pages/Tars'
 import BarcodeIn from '@/components/pages/BarcodeIn'
 import BarcodeOut from '@/components/pages/BarcodeOut'
 
@@ -103,6 +104,12 @@ const router = new Router({
       path: '/spares',
       component: Spares,
       name: 'Spares',
+      beforeEnter: requireFollowingCheck
+    },
+    {
+      path: '/tars',
+      component: Tars,
+      name: 'Tars',
       beforeEnter: requireFollowingCheck
     },
     {
