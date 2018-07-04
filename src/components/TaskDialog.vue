@@ -9,10 +9,10 @@
       <v-card-text>
         <v-layout row wrap align-baseline>
           <v-flex xs6>
-            <v-text-field label="Wp Item" v-model="model.wpItem"></v-text-field>
+            <v-text-field label="Wp Item (Ex: VN00273172-15)" v-model="model.wpItem"></v-text-field>
           </v-flex>
           <v-flex xs6>
-            <v-text-field label="Ref" v-model="model.name"></v-text-field>
+            <v-text-field label="Ref (optional)" v-model="model.name"></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row wrap align-baseline>

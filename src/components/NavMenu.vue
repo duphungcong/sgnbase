@@ -75,7 +75,7 @@ export default {
         { title: 'Tasks', icon: 'filter_none', route: 'Tasks', tooltip: 'Tasks' },
         { title: 'NRCs', icon: 'file_copy', route: 'Nrcs', tooltip: 'NRCs' },
         { title: 'Spares', icon: 'shopping_cart', route: 'Spares', tooltip: 'Spares' },
-        { title: 'TARs', icon: 'help_outline', route: 'Tars', tooltip: 'Tars' },
+        { title: 'TARs', icon: 'help_outline', route: 'Tars', tooltip: 'TARs' },
         { title: 'Barcode In', icon: 'arrow_back', route: 'BarcodeIn', tooltip: 'Barcode In' },
         { title: 'Barcode Out', icon: 'arrow_forward', route: 'BarcodeOut', tooltip: 'Barcode Out' }
       ],
