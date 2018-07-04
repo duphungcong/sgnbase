@@ -21,9 +21,9 @@
     <v-card class="elevation-0">
       <v-card-title>
         <v-btn depressed small dark color="primary" @click.native="addTask">Add Task</v-btn>
+        <v-btn depressed small dark color="primary" @click.native="exportData">Export</v-btn>
         <v-spacer></v-spacer>
         <v-layout row>
-          <v-flex lg1></v-flex>
            <v-flex lg3>
             <v-select
               multiple
@@ -43,7 +43,7 @@
               label="Status"></v-select>
           </v-flex>
           <v-flex lg1></v-flex>
-          <v-flex lg5>
+          <v-flex lg4>
             <v-text-field
               prepend-icon="search"
               label="Search"
@@ -174,6 +174,7 @@ import EoDialog from '@/components/EoDialog'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import SpareDialog from '@/components/SpareDialog'
 import LogsDialog from '@/components/LogsDialog'
+import XLSX from 'xlsx'
 
 const zoneByTab = (tab) => ({
   'tab-0': 'ALL',
@@ -566,6 +567,36 @@ export default {
           return 'grey lighten-2'
         }
       }
+    },
+    exportData () {
+      let exported = []
+      this.workpackByTab.forEach((element) => {
+        let item = {
+          WP_ITEM: element.wpItem,
+          TASK: element.name,
+          ZONE: element.zone,
+          TASK_TYPE: element.type,
+          TITLE: element.title,
+          AMS_MH: element.amsMH,
+          MAC_MH: element.macMH,
+          MEN: element.men,
+          HOURS: element.hour,
+          ZONE_DIVISION: element.zoneDivision,
+          REMARKS: element.remarks
+        }
+        exported.push(item)
+      })
+      // console.log(exported)
+      exported.sort((a, b) => {
+        return a.ZONE_DIVISION.localeCompare(b.ZONE_DIVISION) || a.WP_ITEM.localeCompare(b.WP_ITEM)
+      })
+      // console.log(exported)
+      let worksheet = XLSX.utils.json_to_sheet(Object.assign([], exported))
+      // console.log(worksheet)
+      let workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'ZD')
+      // // console.log(workbook)
+      XLSX.writeFile(workbook, 'TASKS.xlsx')
     }
   },
   mounted () {

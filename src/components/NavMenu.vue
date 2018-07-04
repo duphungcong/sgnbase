@@ -76,6 +76,7 @@ export default {
         { title: 'NRCs', icon: 'file_copy', route: 'Nrcs', tooltip: 'NRCs' },
         { title: 'Spares', icon: 'shopping_cart', route: 'Spares', tooltip: 'Spares' },
         { title: 'TARs', icon: 'help_outline', route: 'Tars', tooltip: 'TARs' },
+        { title: 'Export In/Out', icon: 'save_alt', route: 'Export', tooltip: 'Export' },
         { title: 'Barcode In', icon: 'arrow_back', route: 'BarcodeIn', tooltip: 'Barcode In' },
         { title: 'Barcode Out', icon: 'arrow_forward', route: 'BarcodeOut', tooltip: 'Barcode Out' }
       ],

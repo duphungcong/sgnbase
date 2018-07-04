@@ -2,10 +2,11 @@
   <v-flex xs12>
     <v-card class="elevation-0">
       <v-card-title>
+        <v-btn depressed small dark color="primary" @click.native="exportData">Export</v-btn>
         <v-spacer></v-spacer>
         <v-layout row>
-          <v-flex lg1></v-flex>
-           <v-flex lg3>
+          <v-flex lg2></v-flex>
+           <v-flex lg4>
             <v-select
               multiple
               :items="status"
@@ -13,7 +14,6 @@
               clearable
               label="Status"></v-select>
           </v-flex>
-          <v-flex lg1></v-flex>
           <v-flex lg1></v-flex>
           <v-flex lg5>
             <v-text-field
@@ -97,6 +97,7 @@ import { mapState, mapMutations } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import TarDialog from '@/components/TarDialog'
+import XLSX from 'xlsx'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -125,13 +126,13 @@ export default {
         descending: true
       },
       header: [
-        { text: 'NUMBER', left: true, value: 'number', width: '12%' },
-        { text: 'QUESTION', left: true, value: 'question', width: '12%' },
-        { text: 'ANSWER', left: true, value: 'answer', width: '15%' },
-        { text: 'SEND DATE', left: true, value: 'sendDate', width: '10%' },
+        { text: 'NUMBER', left: true, value: 'number', width: '10%' },
+        { text: 'QUESTION', left: true, value: 'question', width: '20%' },
+        { text: 'ANSWER', left: true, value: 'answer', width: '20%' },
+        { text: 'SEND DATE', left: true, value: 'sendDate', width: '5%' },
         { text: 'REPLY DATE', left: true, value: 'replyDate', width: '5%' },
-        { text: 'ZONE', left: true, value: 'zoneDivision', width: '8%' },
-        { text: 'STATUS', left: true, value: 'status', width: '8%' },
+        { text: 'ZONE', left: true, value: 'zoneDivision', width: '10%' },
+        { text: 'STATUS', left: true, value: 'status', width: '10%' },
         { text: 'NOTES', left: true, value: 'notes', width: '15%' },
         { text: 'QUICK UPDATE', sortable: false, value: '', width: '5%' }
       ],
@@ -205,6 +206,29 @@ export default {
       }
       const getTarByStatus = filterBy(byStatus)
       return this.selectedStatus.length === 0 ? tar : getTarByStatus(tar)
+    },
+    exportData () {
+      let exported = []
+      this.tarsByFilter.forEach((element) => {
+        let item = {
+          NUMBER: element.number,
+          QUESTION: element.question,
+          ANSWER: element.answer,
+          SEND: this.appFunction.formatDate(element.sendDate) || 'NIL',
+          REPLY: this.appFunction.formatDate(element.replyDate) || 'NIL',
+          ZONE: element.zoneDivision,
+          STATUS: element.status,
+          NOTES: element.notes
+        }
+        exported.push(item)
+      })
+      // console.log(exportedWorkpack)
+      let worksheet = XLSX.utils.json_to_sheet(Object.assign([], exported))
+      // console.log(worksheet)
+      let workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'TARS')
+      // // console.log(workbook)
+      XLSX.writeFile(workbook, 'TARS.xlsx')
     }
   },
   mounted () {

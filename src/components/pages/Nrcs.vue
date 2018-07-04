@@ -3,9 +3,9 @@
     <v-card class="elevation-0">
       <v-card-title>
         <v-btn depressed small dark color="primary" @click.native="addNrc">Add NRC</v-btn>
+        <v-btn depressed small dark color="primary" @click.native="exportData">Export</v-btn>
         <v-spacer></v-spacer>
         <v-layout row>
-          <v-flex lg1></v-flex>
            <v-flex lg3>
             <v-select
               multiple
@@ -24,7 +24,7 @@
               label="Zone"></v-select>
           </v-flex>
           <v-flex lg1></v-flex>
-          <v-flex lg5>
+          <v-flex lg4>
             <v-text-field
               prepend-icon="search"
               label="Search"
@@ -149,6 +149,7 @@ import SparesDialog from '@/components/SparesDialog'
 import TarDialog from '@/components/TarDialog'
 import TarsDialog from '@/components/TarsDialog'
 import LogsDialog from '@/components/LogsDialog'
+import XLSX from 'xlsx'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -435,6 +436,29 @@ export default {
       }
       const getNrcsByZone = filterBy(byZone)
       return this.selectedZone.length === 0 ? nrcs : getNrcsByZone(nrcs)
+    },
+    exportData () {
+      let exported = []
+      this.nrcsByFilter.forEach((element) => {
+        let item = {
+          NRC: element.number,
+          DESCRIPTION: element.content,
+          REF: element.ref,
+          PRIORITY: element.priority,
+          ZONE: element.zoneDivision,
+          STATUS: element.status,
+          SPARES: element.spareStatus,
+          NOTES: element.notes
+        }
+        exported.push(item)
+      })
+      // console.log(exportedWorkpack)
+      let worksheet = XLSX.utils.json_to_sheet(Object.assign([], exported))
+      // console.log(worksheet)
+      let workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'NRC')
+      // // console.log(workbook)
+      XLSX.writeFile(workbook, 'NRCS.xlsx')
     }
   },
   mounted () {

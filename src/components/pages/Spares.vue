@@ -2,9 +2,9 @@
   <v-flex xs12>
     <v-card class="elevation-0">
       <v-card-title>
+        <v-btn depressed small dark color="primary" @click.native="exportData">Export</v-btn>
         <v-spacer></v-spacer>
         <v-layout row>
-          <v-flex lg1></v-flex>
            <v-flex lg3>
             <v-select
               multiple
@@ -23,7 +23,7 @@
               label="Priority"></v-select>
           </v-flex>
           <v-flex lg1></v-flex>
-          <v-flex lg5>
+          <v-flex lg4>
             <v-text-field
               prepend-icon="search"
               label="Search"
@@ -110,6 +110,7 @@ import { mapState, mapMutations } from 'vuex'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import SpareDialog from '@/components/SpareDialog'
+import XLSX from 'xlsx'
 
 const compose = (...fns) => {
   return fns.reduce((f, g) => (x) => f(g(x)))
@@ -236,11 +237,29 @@ export default {
       const getSparesbyPriority = filterBy(byPriority)
       return this.selectedPriority.length === 0 ? spares : getSparesbyPriority(spares)
     },
-    statusColor (status) {
-      if (status === 'notYet') return 'grey lighten-2'
-      if (status === 'avail') return 'blue white--text'
-      if (status === 'issued') return 'green white--text'
-      if (status === 'cancel') return 'brown lighten-1 white--text'
+    exportData () {
+      let exported = []
+      this.sparesByFilter.forEach((element) => {
+        let item = {
+          RQF: element.rqf,
+          NRC: element.refName,
+          DESCRIPTION: element.description,
+          PN: element.pn,
+          QTY: element.quantity,
+          PRI: element.priority,
+          STATUS: element.status,
+          EST_DATE: this.appFunction.formatDate(element.estDate) || 'NIL',
+          NOTES: element.notes
+        }
+        exported.push(item)
+      })
+      // console.log(exportedWorkpack)
+      let worksheet = XLSX.utils.json_to_sheet(Object.assign([], exported))
+      // console.log(worksheet)
+      let workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'SPARES')
+      // // console.log(workbook)
+      XLSX.writeFile(workbook, 'SPARES.xlsx')
     }
   },
   mounted () {
