@@ -26,5 +26,14 @@ export default {
     if (status === 'ready') return 'blue white--text'
     if (status === 'done') return 'green white--text'
     if (status === 'cancel') return 'brown lighten-1 white--text'
+  },
+  currentShift (startDate) {
+    let today = Date.now()
+    let start = new Date(startDate)
+    if (today < start) {
+      return 0
+    }
+    let diff = new Date(today - start)
+    return diff.getUTCDate()
   }
 }

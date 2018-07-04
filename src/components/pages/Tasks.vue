@@ -256,13 +256,7 @@ export default {
       }
     },
     currentShift () {
-      let today = Date.now()
-      let start = new Date(this.check.startDate)
-      if (today < start) {
-        return 0
-      }
-      let diff = new Date(today - start)
-      return diff.getUTCDate()
+      return this.appFunction.currentShift(this.check.startDate)
     }
   },
   watch: {

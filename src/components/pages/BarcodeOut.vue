@@ -113,7 +113,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['workpack', 'nrcs', 'checkId'])
+    ...mapState(['workpack', 'nrcs', 'checkId']),
+    check () {
+      return this.$store.getters.check
+    }
   },
   methods: {
     ...mapMutations(['setLoading']),
@@ -132,6 +135,7 @@ export default {
           isNRC: scan.isNRC,
           person: this.person,
           time: time.toLocaleString(),
+          shift: this.appFunction.currentShift(this.check.startDate),
           notes: '',
           updateSuccess: false,
           updateFail: false
@@ -187,6 +191,7 @@ export default {
           status: 'out',
           person: item.person,
           time: item.time,
+          shift: item.shift,
           action: 'take out',
           notes: item.itemInWorkpack.notes
         }
