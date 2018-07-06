@@ -213,6 +213,8 @@ export default {
         let log = {
           id: firebase.database().ref(logRef).push().key,
           refId: item.itemInWorkpack.id,
+          refName: item.isNRC ? 'NRC ' + item.itemInWorkpack.number : item.itemInWorkpack.wpItem,
+          zoneDivision: item.itemInWorkpack.zoneDivision,
           status: item.status,
           person: item.person,
           time: item.time,

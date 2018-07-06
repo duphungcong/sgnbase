@@ -109,7 +109,6 @@ export default {
         }
       )
     },
-    exportData () {},
     filterByShift (logs) {
       const byShift = (arr) => {
         return arr.filter(item =>
@@ -135,6 +134,35 @@ export default {
     filterNrcLogs () {
       const filterAll = compose(this.filterByShift, this.filterByAction)
       this.nrcLogsByFilter = filterAll(Object.assign([], this.nrcLogs))
+    },
+    exportData () {
+      let exported = []
+      this.nrcLogsByFilter.forEach((element) => {
+        let item = {
+          NAME: element.refName,
+          ZONE_DIVISION: element.zoneDivision,
+          STATUS: element.status
+        }
+        exported.push(item)
+      })
+      this.taskLogsByFilter.forEach((element) => {
+        let item = {
+          NAME: element.refName,
+          ZONE_DIVISION: element.zoneDivision,
+          STATUS: element.status
+        }
+        exported.push(item)
+      })
+      exported.sort((a, b) => {
+        return a.ZONE_DIVISION.localeCompare(b.ZONE_DIVISION) || a.NAME.localeCompare(b.NAME)
+      })
+      // console.log(exportedWorkpack)
+      let worksheet = XLSX.utils.json_to_sheet(Object.assign([], exported))
+      // console.log(worksheet)
+      let workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'HISTORY')
+      // // console.log(workbook)
+      XLSX.writeFile(workbook, 'HISTORY.xlsx')
     }
   },
   created () {

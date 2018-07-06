@@ -12,7 +12,7 @@ import Tasks from '@/components/pages/Tasks'
 import Nrcs from '@/components/pages/Nrcs'
 import Spares from '@/components/pages/Spares'
 import Tars from '@/components/pages/Tars'
-import Export from '@/components/pages/Export'
+import History from '@/components/pages/History'
 import BarcodeIn from '@/components/pages/BarcodeIn'
 import BarcodeOut from '@/components/pages/BarcodeOut'
 
@@ -114,9 +114,9 @@ const router = new Router({
       beforeEnter: requireFollowingCheck
     },
     {
-      path: '/export',
-      component: Export,
-      name: 'Export',
+      path: '/history',
+      component: History,
+      name: 'History',
       beforeEnter: requireFollowingCheck
     },
     {
