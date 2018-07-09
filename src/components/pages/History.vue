@@ -24,6 +24,20 @@
         </v-layout>
       </v-card-title>
     </v-card>
+
+    <v-data-table
+      :headers="header"
+      :items="allFilter"
+      :pagination.sync="pagination"
+      item-key="NAME"
+      >
+      <template slot="items" slot-scope="props">
+        <td class="body-0">{{ props.item.refName }}</td>
+        <td class="body-0">{{ props.item.zoneDivision }}</td>
+        <td class="body-0">{{ props.item.shift }}</td>
+        <td class="body-0">{{ props.item.status }}</td>
+      </template>
+    </v-data-table>
   </v-flex>
 </template>
 
@@ -53,7 +67,20 @@ export default {
       taskLogsByFilter: [],
       nrcLogs: [],
       nrcLogsByFilter: [],
-      result: []
+      allFilter: [],
+      result: [],
+      header: [
+        { text: 'NAME', left: true, value: 'refName', width: '25%' },
+        { text: 'ZONE', left: true, value: 'zoneDivision', width: '25%' },
+        { text: 'SHIFT', left: true, value: 'shift', width: '25%' },
+        { text: 'STATUS', left: true, value: 'status', width: '25%' }
+      ],
+      pagination: {
+        page: 1,
+        totalItems: 0,
+        rowsPerPage: 10,
+        sortBy: 'zoneDivision'
+      }
     }
   },
   computed: {
@@ -70,12 +97,10 @@ export default {
       this.filterNrcLogs()
     },
     selectedShift (value) {
-      this.filterTaskLogs()
-      this.filterNrcLogs()
+      this.filterAndMerge()
     },
     action (value) {
-      this.filterTaskLogs()
-      this.filterNrcLogs()
+      this.filterAndMerge()
     }
   },
   methods: {
@@ -135,6 +160,11 @@ export default {
       const filterAll = compose(this.filterByShift, this.filterByAction)
       this.nrcLogsByFilter = filterAll(Object.assign([], this.nrcLogs))
     },
+    filterAndMerge () {
+      this.filterTaskLogs()
+      this.filterNrcLogs()
+      this.allFilter = [...this.taskLogsByFilter, ...this.nrcLogsByFilter]
+    },
     exportData () {
       let exported = []
       this.nrcLogsByFilter.forEach((element) => {
@@ -170,8 +200,7 @@ export default {
     this.getNrcLogs()
   },
   mounted () {
-    this.filterTaskLogs()
-    this.filterNrcLogs()
+    this.filterAndMerge()
   }
 }
 </script>

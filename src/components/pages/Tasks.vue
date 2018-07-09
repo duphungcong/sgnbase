@@ -55,9 +55,9 @@
     </v-card>
 
     <v-data-table
-      :headers="headerTask"
+      :headers="header"
       :items="workpackByTab"
-      :pagination.sync="paginationTask"
+      :pagination.sync="pagination"
       :search="search"
       item-key="wpItem"
       >
@@ -222,7 +222,7 @@ export default {
       tabs: 'tab-0',
       search: '',
       workpackByTab: [],
-      headerTask: [
+      header: [
         { text: 'TITLE', left: true, value: 'title', width: '20%' },
         { text: 'SHIFTS', left: true, value: 'status', width: '15%' },
         { text: 'NOTES', left: true, value: 'notes', width: '15%' },
@@ -230,7 +230,7 @@ export default {
         { text: 'TYPE', left: true, value: 'type', width: '5%' },
         { text: 'ZONE DIVISION', left: true, value: 'zoneDivision' }
       ],
-      paginationTask: {
+      pagination: {
         page: 1,
         totalItems: 0,
         rowsPerPage: 10,
