@@ -153,7 +153,7 @@ export default {
       this.barcode = ''
     },
     formatBarcode (barcode) {
-      let isNRC = barcode.substr(0, 3) === 'nrc'
+      let isNRC = barcode.substr(0, 3) === 'nrc' || barcode.substr(0, 3) === 'NRC'
       if (isNRC) {
         return {
           number: parseInt(barcode.substr(3, 7), 10),
