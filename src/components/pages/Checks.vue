@@ -14,9 +14,9 @@
           <td class="body-2">{{ props.item.name }}</td>
           <td class="body-2">{{ appFunction.formatDate(props.item.startDate) }}</td>
           <td class="body-2">{{ appFunction.formatDate(props.item.finishDate) }}</td>
-          <td class="body-2">{{ remainDay(props.item.startDate, props.item.finishDate) }}</td>
           <td class="text-xs-right">
-            <v-btn flat outline small color="primary" @click.native="followCheck(props.item.id)">Follow</v-btn>
+            <v-btn flat outline small color="success" @click.native="followCheck(props.item.id)">Follow</v-btn>
+            <v-btn flat outline small color="primary" @click.native="editCheck(props.item.id)">Edit</v-btn>
             <v-btn flat outline  small color="error" @click.native="confirmDelete(props.item.id)">Delete</v-btn>
           </td>
         </template>
@@ -58,12 +58,11 @@ export default {
         descending: true
       },
       headers: [
-        { text: 'Aircraft', left: true, value: 'aircraft.name' },
-        { text: 'Name', left: true, value: 'name' },
-        { text: 'From', left: true, value: 'startDate' },
-        { text: 'To', left: true, value: 'finishDate' },
-        { text: 'Status', left: true, value: '' },
-        { text: '', sortable: false, value: '' }
+        { text: 'Aircraft', left: true, value: 'aircraft.name', width: '15%' },
+        { text: 'Name', left: true, value: 'name', width: '25%' },
+        { text: 'From', left: true, value: 'startDate', width: '10%' },
+        { text: 'To', left: true, value: 'finishDate', width: '10%' },
+        { text: '', sortable: false, value: '', width: '40%' }
       ]
     }
   },
@@ -75,6 +74,9 @@ export default {
     ...mapMutations('confirmdialog', ['showDialog', 'closeDialog']),
     addCheck () {
       this.$router.push({ name: 'Check' })
+    },
+    editCheck (id) {
+      this.$router.push({ name: 'Check', params: { id: id } })
     },
     deleteCheck () {
       this.setLoading(true)
@@ -109,22 +111,6 @@ export default {
     },
     followCheck (checkId) {
       this.$store.dispatch('followCheck', checkId)
-    },
-    remainDay (startDate, finishDate) {
-      let start = new Date(startDate)
-      let finish = new Date(finishDate)
-      let today = Date.now(7)
-      let diff1 = new Date(start - today)
-      let diff2 = new Date(finish - today)
-      if (diff1 > 0) {
-        let remain1 = diff1.getUTCDate() - 1
-        return remain1 + ' days to start'
-      }
-      if (diff2 > 0) {
-        let remain2 = diff2.getUTCDate()
-        return remain2 + ' days to finish'
-      }
-      return 'completed'
     }
   },
   created () {

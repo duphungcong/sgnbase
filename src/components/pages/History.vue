@@ -137,7 +137,7 @@ export default {
     filterByShift (logs) {
       const byShift = (arr) => {
         return arr.filter(item =>
-          item.shift === this.selectedShift
+          this.appFunction.timeToShift(item.time, this.check.startDate) === this.selectedShift
         )
       }
       const getLogsByShift = filterBy(byShift)

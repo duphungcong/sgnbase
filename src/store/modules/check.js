@@ -3,6 +3,7 @@ import 'firebase/database'
 
 const state = {
   checkId: null,
+  editMode: false,
   aircraftList: []
 }
 
@@ -12,6 +13,9 @@ const mutations = {
   },
   setCheckId (state, payload) {
     state.checkId = payload
+  },
+  setEditMode (state, payload) {
+    state.editMode = payload
   }
 }
 const actions = {

@@ -44,5 +44,21 @@ export default {
     }
     let diff = new Date(date - start)
     return diff.getUTCDate()
+  },
+  remainDay (startDate, finishDate) {
+    let start = new Date(startDate)
+    let finish = new Date(finishDate)
+    let today = Date.now(7)
+    let diff1 = new Date(start - today)
+    let diff2 = new Date(finish - today)
+    if (diff1 > 0) {
+      let remain1 = diff1.getUTCDate() - 1
+      return remain1 + ' days to start'
+    }
+    if (diff2 > 0) {
+      let remain2 = diff2.getUTCDate()
+      return remain2 + ' days to finish'
+    }
+    return 'completed'
   }
 }

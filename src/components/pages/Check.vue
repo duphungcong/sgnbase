@@ -20,6 +20,7 @@
               :items="aircraftList"
               v-model="check.aircraft"
               :rules="step1Rules.aircraft"
+              :disabled="editMode"
               label="Aircraft"
               item-text="name"
               item-value="name"
@@ -74,10 +75,17 @@
         </v-layout>
         <v-btn flat outline small @click.native="cancelProgress">Cancel</v-btn>
         <v-btn
+          v-if="editMode"
           flat outline small
           color="primary"
-          @click.native="nextStep2"
-          :disabled="!validStep1">Next</v-btn>
+          :disabled="!validStep1"
+          @click.native="saveEditCheck">Save</v-btn>
+        <v-btn
+          v-else
+          flat outline small
+          color="primary"
+          :disabled="!validStep1"
+          @click.native="nextStep2">Next</v-btn>
       </v-stepper-content>
 
       <v-stepper-step step="2" :complete="step > 2">Import WP</v-stepper-step>
@@ -139,6 +147,7 @@ export default {
     if (to.name !== 'Check') {
       // console.log('leaved')
       this.setCheckId(null)
+      this.setEditMode(false)
     }
     next()
   },
@@ -146,7 +155,6 @@ export default {
     return {
       dialog: false,
       dialogTitle: '',
-      title: '',
       check: new Check(),
       step: 1,
       step1Rules: {
@@ -164,7 +172,7 @@ export default {
   },
   computed: {
     ...mapState(['checks']),
-    ...mapState('check', ['checkId', 'aircraftList']),
+    ...mapState('check', ['checkId', 'aircraftList', 'editMode']),
     numberTaskCard () {
       return this.workpack.length
     },
@@ -178,7 +186,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('check', ['setCheckId']),
+    ...mapMutations('check', ['setCheckId', 'setEditMode']),
     ...mapMutations(['setLoading']),
     nextStep2 () {
       this.getAms()
@@ -220,6 +228,18 @@ export default {
       )
     },
     saveEditCheck () {
+      this.setLoading(true)
+      this.check.setShifts()
+      firebase.database().ref('checks/' + this.check.id).update(this.check).then(
+        (data) => {
+          this.setLoading(false)
+          this.$router.push({ name: 'Checks' })
+        },
+        (error) => {
+          console.log(error)
+          this.setLoading(false)
+        }
+      )
       console.log('save edit check')
     },
     getCheck () {
@@ -323,10 +343,8 @@ export default {
   created () {
     this.$store.dispatch('check/getAircraftList')
     if (this.$route.params.id) {
-      this.title = 'Edit Check'
+      this.setEditMode(true)
       this.setCheckId(this.$route.params.id)
-    } else {
-      this.title = 'New Check'
     }
     this.getCheck()
   },

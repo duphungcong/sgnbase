@@ -25,7 +25,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn depressed small @click.native="cancel()">Cancel</v-btn>
-        <v-btn depressed small class="primary" @click.native="save()" :disabled="!scanFileDone || type === ''">Save</v-btn>
+        <v-btn depressed small class="primary" @click.native="save()" :disabled="!scanFileDone || type === ''">Import</v-btn>
       </v-card-actions>
     </v-card>
   </v-flex>

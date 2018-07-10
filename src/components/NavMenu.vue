@@ -72,18 +72,18 @@ export default {
       mini: false,
       checkMenu: [
         { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard', tooltip: 'Dashboard' },
-        { title: 'Tasks', icon: 'filter_none', route: 'Tasks', tooltip: 'Tasks' },
+        { title: 'Tasks', icon: 'library_books', route: 'Tasks', tooltip: 'Tasks' },
         { title: 'NRCs', icon: 'file_copy', route: 'Nrcs', tooltip: 'NRCs' },
         { title: 'Spares', icon: 'shopping_cart', route: 'Spares', tooltip: 'Spares' },
         { title: 'TARs', icon: 'help_outline', route: 'Tars', tooltip: 'TARs' },
-        { title: 'In/Out History', icon: 'search', route: 'History', tooltip: 'In/Out History' },
+        { title: 'In/Out History', icon: 'history', route: 'History', tooltip: 'In/Out History' },
         { title: 'Barcode In', icon: 'arrow_back', route: 'BarcodeIn', tooltip: 'Barcode In' },
         { title: 'Barcode Out', icon: 'arrow_forward', route: 'BarcodeOut', tooltip: 'Barcode Out' }
       ],
       noCheckMenu: [
-        { title: 'Checks', icon: 'contacts', route: 'Checks', tooltip: 'Checks' },
+        { title: 'Checks', icon: 'flight_takeoff', route: 'Checks', tooltip: 'Checks' },
         // { title: 'AMS Task', icon: 'contacts', route: 'Task', tooltip: 'Task' },
-        { title: 'Mac Consult', icon: 'contacts', route: 'Consult', tooltip: 'Consult' }
+        { title: 'Mac Consult', icon: 'layers', route: 'Consult', tooltip: 'Consult' }
       ]
     }
   },
