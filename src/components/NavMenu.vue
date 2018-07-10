@@ -10,7 +10,13 @@
         <v-list class="pa-0">
           <v-list-tile avatar>
             <v-list-tile-avatar>
-              <img src="https://randomuser.me/api/portraits/lego/7.jpg" >
+              <img src="https://randomuser.me/api/portraits/men/3.jpg">
+              <!-- <v-avatar color="teal" size="38">
+                <span class="white--text headline">{{ user.email[0] }}</span>
+              </v-avatar> -->
+              <!-- <v-avatar color="info" size="38">
+                <v-icon dark>account_circle</v-icon>
+              </v-avatar> -->
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>{{ user.email }}</v-list-tile-title>
