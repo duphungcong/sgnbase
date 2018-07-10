@@ -83,6 +83,9 @@ export default {
       let removes = {}
       removes['/checks/' + this.deletedCheckId] = null
       removes['/workpacks/' + this.deletedCheckId] = null
+      removes['/nrcs/' + this.deletedCheckId] = null
+      removes['/tars/' + this.deletedCheckId] = null
+      removes['/spares/' + this.deletedCheckId] = null
       firebase.database().ref().update(removes).then(
         (data) => {
           this.closeDelete()
