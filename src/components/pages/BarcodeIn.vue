@@ -159,7 +159,6 @@ export default {
           isNRC: scan.isNRC,
           person: this.person,
           time: time.toLocaleString(),
-          shift: this.appFunction.currentShift(this.check.startDate),
           status: this.statusAll,
           notes: '',
           updateSuccess: false,
@@ -218,7 +217,6 @@ export default {
           status: item.status,
           person: item.person,
           time: item.time,
-          shift: item.shift,
           action: 'receive',
           notes: item.itemInWorkpack.notes
         }

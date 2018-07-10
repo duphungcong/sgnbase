@@ -35,5 +35,14 @@ export default {
     }
     let diff = new Date(today - start)
     return diff.getUTCDate()
+  },
+  timeToShift (time, startDate) {
+    let date = new Date(time)
+    let start = new Date(startDate)
+    if (date < start) {
+      return 0
+    }
+    let diff = new Date(date - start)
+    return diff.getUTCDate()
   }
 }

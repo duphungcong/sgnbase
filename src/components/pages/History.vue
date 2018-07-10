@@ -34,8 +34,8 @@
       <template slot="items" slot-scope="props">
         <td class="body-0">{{ props.item.refName }}</td>
         <td class="body-0">{{ props.item.zoneDivision }}</td>
-        <td class="body-0">{{ props.item.shift }}</td>
         <td class="body-0">{{ props.item.status }}</td>
+         <td class="body-0">{{ appFunction.timeToShift(props.item.time, check.startDate) }}</td>
       </template>
     </v-data-table>
   </v-flex>
@@ -72,8 +72,8 @@ export default {
       header: [
         { text: 'NAME', left: true, value: 'refName', width: '25%' },
         { text: 'ZONE', left: true, value: 'zoneDivision', width: '25%' },
-        { text: 'SHIFT', left: true, value: 'shift', width: '25%' },
-        { text: 'STATUS', left: true, value: 'status', width: '25%' }
+        { text: 'STATUS', left: true, value: 'status', width: '25%' },
+        { text: 'SHIFT', left: true, value: 'shift', width: '25%' }
       ],
       pagination: {
         page: 1,
@@ -91,10 +91,10 @@ export default {
   },
   watch: {
     taskLogs (value) {
-      this.filterTaskLogs()
+      this.filterAndMerge()
     },
     nrcLogs (value) {
-      this.filterNrcLogs()
+      this.filterAndMerge()
     },
     selectedShift (value) {
       this.filterAndMerge()
@@ -167,19 +167,12 @@ export default {
     },
     exportData () {
       let exported = []
-      this.nrcLogsByFilter.forEach((element) => {
+      this.allFilter.forEach((element) => {
         let item = {
           NAME: element.refName,
           ZONE_DIVISION: element.zoneDivision,
-          STATUS: element.status
-        }
-        exported.push(item)
-      })
-      this.taskLogsByFilter.forEach((element) => {
-        let item = {
-          NAME: element.refName,
-          ZONE_DIVISION: element.zoneDivision,
-          STATUS: element.status
+          STATUS: element.status,
+          SHIFT: this.appFunction.timeToShift(element.time, this.check.startDate)
         }
         exported.push(item)
       })
