@@ -266,6 +266,9 @@ export default {
     },
     scanZoneDivision () {
       return this.workpack.map(item => {
+        if (item.name === undefined) {
+          item.name = 'N/A'
+        }
         const task = this.ams.find(el => {
           return el.name === item.name
         })
