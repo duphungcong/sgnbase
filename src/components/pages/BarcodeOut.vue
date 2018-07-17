@@ -74,7 +74,7 @@
                   <span>{{ item.time }}</span>
                 </v-flex>
                 <v-flex xs5>
-                  <v-text-field label="Remarks" v-model="item.notes"></v-text-field>
+                  <v-text-field label="Note" v-model="item.notes"></v-text-field>
                 </v-flex>
                 <v-flex xs1 pl-3>
                   <v-btn icon @click.native="remove(item)">
