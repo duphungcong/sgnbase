@@ -52,9 +52,6 @@
             <v-flex xs2>
               <span><strong>Item ({{ scanList.length }})</strong></span>
             </v-flex>
-            <!-- <v-flex xs2>
-              <span><strong>Status</strong></span>
-            </v-flex> -->
             <v-flex xs4>
               <span><strong>Time</strong></span>
             </v-flex>
@@ -78,13 +75,6 @@
                 <v-flex xs2>
                   <span v-if="item.isNRC">NRC </span><span>{{ item.number }}</span>
                 </v-flex>
-                <!-- <v-flex xs2>
-                  <v-radio-group v-model="item.status" row>
-                    <v-radio value="done" color="green"></v-radio>
-                    <v-radio value="inProgress" color="yellow darken-3"></v-radio>
-                    <v-radio value="notYet" color="red"></v-radio>
-                  </v-radio-group>
-                </v-flex> -->
                 <v-flex xs4>
                   <span>{{ item.time }}</span>
                 </v-flex>
@@ -118,7 +108,7 @@ import 'firebase/database'
 export default {
   data () {
     return {
-      person: 'duphungcong@gmail.com',
+      person: '',
       barcode: '',
       scanList: [],
       statusAll: 'done',
@@ -128,6 +118,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('auth', ['user']),
     ...mapState(['workpack', 'nrcs', 'checkId']),
     check () {
       return this.$store.getters.check
@@ -267,6 +258,9 @@ export default {
   },
   destroyed () {
     this.$barcodeScanner.destroy()
+  },
+  mounted () {
+    this.person = this.user.email
   }
 }
 </script>
